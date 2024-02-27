@@ -1,37 +1,49 @@
 package restaurant.GrandmasFood.services.clientService;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 import restaurant.GrandmasFood.common.domains.entity.client.ClientEntity;
 import restaurant.GrandmasFood.repositories.ClientRepository.IClientRepository;
-
-import java.util.List;
 import java.util.Optional;
 
+
 @Service
-public class ClientServiceImpl implements ClientService{
+public class ClientServiceImpl{
 
     @Autowired
     IClientRepository iClientRepository;
 
 
-    @Override
-    public List<ClientEntity> findAll() {
-        return iClientRepository.findAll();
+    public ClientEntity createClient(ClientEntity clientEntity) {
+
+        Optional<ClientEntity> find = iClientRepository.findClientByDocument(clientEntity.getDocument());
+        if (find.isPresent()) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "A client with the same document already exists");
+        }
+        return iClientRepository.save(clientEntity);
     }
 
-    @Override
-    public Optional<ClientEntity> findByDocument(String document) {
-        return iClientRepository.findById(document);
+    public ClientEntity getClient(String document){
+        return iClientRepository.findClientByDocument(document).orElseThrow(()->
+                new ResponseStatusException(HttpStatus.NOT_FOUND, String.format("Client %s Not Found", document )));
     }
 
-    @Override
-    public void save(ClientEntity client) {
-        iClientRepository.save(client);
+    public ClientEntity updateClient(String document, ClientEntity updatedClient){
+        ClientEntity existingClient = iClientRepository.findClientByDocument(document).orElseThrow(()->
+                new ResponseStatusException(HttpStatus.NOT_FOUND, String.format("Client %s Not Found", document )));
+        existingClient.setCellphone(updatedClient.getCellphone());
+        existingClient.setFullName(updatedClient.getFullName());
+        existingClient.setEmail(updatedClient.getEmail());
+        existingClient.setAddress(updatedClient.getAddress());
+
+        return iClientRepository.save(existingClient);
     }
 
-    @Override
-    public void deleteByDocument(String document) {
-        iClientRepository.deleteByDocument(document);
+    public void deleteClient(String document){
+        ClientEntity existingClient = iClientRepository.findClientByDocument(document).orElseThrow(()->
+                new ResponseStatusException(HttpStatus.NOT_FOUND, String.format("Client %s Not Found", document )));
+        iClientRepository.delete(existingClient);
     }
 }
