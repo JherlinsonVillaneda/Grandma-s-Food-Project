@@ -6,6 +6,10 @@ public interface IProductEndpoints {
 
     String PRODUCT_FIND="/products/{uuid}";
 
+    String PRODUCT_CREATE="/products";
+
+    String PRODUCT_DELETE="/products/{uuid}";
+
 
 
 

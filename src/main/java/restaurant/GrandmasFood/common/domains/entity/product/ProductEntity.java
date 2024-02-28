@@ -25,7 +25,7 @@ public class ProductEntity {
     @NotEmpty
     private UUID uuid;
 
-    @Column(length = 255)
+    @Column(length = 255, unique = true)
     @NotEmpty
     private String name;
 
