@@ -7,10 +7,10 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import restaurant.GrandmasFood.common.domains.entity.client.ClientEntity;
 
-public interface IClientRepository extends JpaRepository<ClientEntity, String> {
+import javax.swing.text.html.Option;
+import java.util.Optional;
 
-    @Modifying
-    @Transactional
-    @Query("DELETE FROM client c WHERE c.document = :document_param")
-    void deleteByDocument(@Param("document_param") String document_param);
+public interface IClientRepository extends JpaRepository<ClientEntity, String> {
+    Optional<ClientEntity>findClientByDocument(String document);
+
 }
