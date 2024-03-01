@@ -2,6 +2,8 @@ package restaurant.GrandmasFood.common.domains.dto;
 
 import lombok.*;
 
+@AllArgsConstructor
+@NoArgsConstructor
 @Getter
 @Setter
 @ToString

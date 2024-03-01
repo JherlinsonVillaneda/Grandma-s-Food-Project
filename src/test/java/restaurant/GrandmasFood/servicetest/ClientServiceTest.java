@@ -8,12 +8,12 @@ import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.web.server.ResponseStatusException;
 import restaurant.GrandmasFood.common.domains.entity.client.ClientEntity;
 import restaurant.GrandmasFood.repositories.ClientRepository.IClientRepository;
-import restaurant.GrandmasFood.services.clientService.ClientServiceImpl;
+import restaurant.GrandmasFood.services.clientService.impl.ClientServiceImpl;
 import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
 public class ClientServiceTest {
@@ -27,11 +27,13 @@ public class ClientServiceTest {
     }
     @Test
     public void testCreateClientSuccess(){
-        ClientEntity clientEntity=new ClientEntity();
-        ClientEntity clientEntity1=clientService.createClient(clientEntity);
-        assertEquals(clientEntity, clientEntity1);
+        when(iClientRepository.findClientByDocument(anyString())).thenReturn(Optional.empty());
+        ClientEntity clientEntity = ClientEntity.builder().document("CC-1111111")
+                .fullName("Juan").email("juan123@gmail.com").cellphone("32121212").address("Calle 19").build();
+        ClientEntity createClient = clientService.createClient(clientEntity);
+        assertEquals(clientEntity, createClient);
+        verify(iClientRepository, times(1)).save(clientEntity);
     }
-
     @Test(expected = ResponseStatusException.class)
     public void testClientNotCreated(){
         ClientEntity existingClient=new ClientEntity();

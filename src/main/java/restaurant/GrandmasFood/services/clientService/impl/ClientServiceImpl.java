@@ -1,4 +1,4 @@
-package restaurant.GrandmasFood.services.clientService;
+package restaurant.GrandmasFood.services.clientService.impl;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -6,11 +6,13 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 import restaurant.GrandmasFood.common.domains.entity.client.ClientEntity;
 import restaurant.GrandmasFood.repositories.ClientRepository.IClientRepository;
+import restaurant.GrandmasFood.services.clientService.IClientService;
+
 import java.util.Optional;
 
 
 @Service
-public class ClientServiceImpl{
+public class ClientServiceImpl implements IClientService {
 
     @Autowired
     IClientRepository iClientRepository;
