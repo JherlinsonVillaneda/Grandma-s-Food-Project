@@ -16,14 +16,16 @@ import java.util.UUID;
 @Setter
 @Data
 @ToString
+@Builder
+@EqualsAndHashCode
 public class ProductEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(unique = true, length = 38)
+    @Column(unique = true, length = 36)
     @NotEmpty
-    private UUID uuid;
+    private String uuid;
 
     @Column(length = 255, unique = true)
     @NotEmpty
@@ -43,6 +45,6 @@ public class ProductEntity {
 
     @Column(columnDefinition = "boolean default true")
     @NotNull
-    private Boolean availability;
+    private Boolean available;
 
 }
