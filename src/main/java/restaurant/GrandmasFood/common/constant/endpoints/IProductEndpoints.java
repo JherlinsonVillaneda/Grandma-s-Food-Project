@@ -4,7 +4,9 @@ public interface IProductEndpoints {
 
     String PRODUCT_BASE_URL="/products";
 
-    String PRODUCT_FIND="/products/{uuid}";
+    String PRODUCT_GET="/products/{uuid}";
+
+    String PRODUCT_PUT="/products/{uuid}";
 
     String PRODUCT_CREATE="/products";
 

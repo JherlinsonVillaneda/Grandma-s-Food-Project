@@ -14,4 +14,6 @@ public interface IResponse {
     String INTERNAL_SERVER_ERROR = "Internal Server error. Error inesperado del sistema";
     String INTERNAL_SERVER = "Error interno del servidor";
 
+    String NOT_DIFFERENT_VALUES = "No hay diferentes valores en la solicitud.";
+
 }

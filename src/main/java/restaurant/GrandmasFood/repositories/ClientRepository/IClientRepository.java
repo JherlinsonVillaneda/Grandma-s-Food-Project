@@ -7,7 +7,6 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import restaurant.GrandmasFood.common.domains.entity.client.ClientEntity;
 
-import javax.swing.text.html.Option;
 import java.util.Optional;
 
 public interface IClientRepository extends JpaRepository<ClientEntity, String> {

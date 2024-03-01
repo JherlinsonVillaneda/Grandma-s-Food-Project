@@ -7,6 +7,8 @@ import lombok.*;
 @ToString
 @Data
 public class ClientDTO {
+    //Data Transfer Object
+    //Entidad - Controlador
     private String document;
     private String fullName;
     private String email;
