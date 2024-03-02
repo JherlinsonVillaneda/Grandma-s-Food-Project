@@ -1,6 +1,7 @@
 package restaurant.GrandmasFood.common.domains.entity.product;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
@@ -24,27 +25,30 @@ public class ProductEntity {
     private Long id;
 
     @Column(unique = true, length = 36)
-    @NotEmpty
+    @NotNull
     private String uuid;
 
     @Column(length = 255, unique = true)
+    @NotNull
+    @NotBlank(message = "The name is required.")
     @NotEmpty
     private String name;
 
     @Enumerated(EnumType.STRING)
-    @NotEmpty
+    @NotNull
     private CategoryProduct category;
 
-    @Column
-    @NotEmpty
+    @Column(length = 511)
+    @NotNull
     private String description;
 
     @Column
-    @NotEmpty
+    @NotNull
     private Double price;
 
-    @Column(columnDefinition = "boolean default true")
-    @NotNull
+    @Column(columnDefinition = "boolean default true", nullable = false)
     private Boolean available;
 
+    @Column(columnDefinition = "boolean default true", nullable = false)
+    private Boolean removed;
 }

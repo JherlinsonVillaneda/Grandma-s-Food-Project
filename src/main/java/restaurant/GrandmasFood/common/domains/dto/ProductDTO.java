@@ -8,6 +8,8 @@ import restaurant.GrandmasFood.common.domains.entity.product.CategoryProduct;
 @ToString
 @Data
 @Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class ProductDTO {
     private String uuid;
     private String name;

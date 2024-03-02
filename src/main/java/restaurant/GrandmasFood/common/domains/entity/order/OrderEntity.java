@@ -23,8 +23,11 @@ public class OrderEntity {
     private long id;
 
     @Column
+    private String uuid;
+
+    @Column
     @NotBlank
-    private Integer cant;
+    private Integer quantity;
 
     @Column(name = "info_additional", length = 511)
     @NotBlank
@@ -36,7 +39,7 @@ public class OrderEntity {
 
     @Column
     @NotBlank
-    private Double iva;
+    private Double tax;
 
     @Column
     @NotBlank
