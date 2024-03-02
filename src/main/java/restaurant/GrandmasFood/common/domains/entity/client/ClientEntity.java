@@ -12,6 +12,7 @@ import lombok.*;
 @Setter
 @Data
 @ToString
+@Builder
 public class ClientEntity {
 
     @Id
