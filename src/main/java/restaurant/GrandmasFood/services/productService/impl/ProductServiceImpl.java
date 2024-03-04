@@ -6,6 +6,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.server.ResponseStatusException;
 import restaurant.GrandmasFood.common.constant.responses.IResponse;
 import restaurant.GrandmasFood.common.domains.dto.ProductDTO;
@@ -27,10 +28,10 @@ public class ProductServiceImpl implements IProductService {
     ModelMapper modelMapper;
 
     @Override
-    public ProductDTO createProduct(ProductEntity product) {
+    public ProductDTO createProduct(@Valid ProductEntity product) {
         Optional<ProductEntity> find = iProductRepository.findProductByName(product.getName());
         if (find.isPresent()){
-            throw new ResponseStatusException(HttpStatus.CONFLICT, IResponse.CREATE_FAIL);
+            throw new ResponseStatusException(HttpStatus.CONFLICT, String.format(IResponse.CREATE_FAIL_NAME_EXISTS, product.getName()));
         }
         DecimalFormat df = new DecimalFormat("#.00");
 
@@ -39,9 +40,12 @@ public class ProductServiceImpl implements IProductService {
         }
 
         product.setPrice(Double.parseDouble(df.format(product.getPrice())));
-
         product.setUuid(UUID.randomUUID().toString());
-        product.setName(product.getName().toUpperCase());
+
+        if ((product.getName() == null || product.getName().isEmpty()) || (product.getDescription() == null || product.getDescription().isEmpty()) ) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT, IResponse.ERRORS_WITH_NAMES_OR_DESCRIPTION);
+        } else product.setName(product.getName().toUpperCase());
+
         product.setRemoved(false);
         iProductRepository.save(product);
 
@@ -51,8 +55,15 @@ public class ProductServiceImpl implements IProductService {
 
     @Override
     public ProductDTO getProduct(String uuid){
+
+        try {
+            UUID valid = UUID.fromString(uuid);
+        } catch (IllegalArgumentException e) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, IResponse.GET_FAIL_WITH_UUID);
+        }
+
         ProductEntity product = iProductRepository.findProductByUuid(uuid).orElseThrow(()->
-                new ResponseStatusException(HttpStatus.NOT_FOUND, IResponse.NOT_FOUND));
+                new ResponseStatusException(HttpStatus.NOT_FOUND, IResponse.GET_FAIL_PRODUCT_NOT_FOUND));
 
         return modelMapper.map(product, ProductDTO.class);
     }
@@ -60,7 +71,7 @@ public class ProductServiceImpl implements IProductService {
     @Override
     public ProductDTO updateProduct(String uuid, ProductEntity product){
         ProductEntity existingProduct = iProductRepository.findProductByUuid(uuid).orElseThrow(()->
-                new ResponseStatusException(HttpStatus.NOT_FOUND, IResponse.NOT_FOUND));
+                new ResponseStatusException(HttpStatus.NOT_FOUND, IResponse.GET_FAIL_WITH_UUID));
 
         if (equalsProducts(existingProduct, product)){
             throw new ResponseStatusException(HttpStatus.CONFLICT, IResponse.NOT_DIFFERENT_VALUES);
@@ -89,8 +100,14 @@ public class ProductServiceImpl implements IProductService {
     @Override
     @Transient
     public void deleteProduct(String uuid) {
+        try {
+            UUID valid = UUID.fromString(uuid);
+        } catch (IllegalArgumentException e) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, IResponse.GET_FAIL_WITH_UUID);
+        }
+
         ProductEntity existingProduct = iProductRepository.findProductByUuid(uuid).orElseThrow(()->
-                new ResponseStatusException(HttpStatus.NOT_FOUND, IResponse.NOT_FOUND));
+                new ResponseStatusException(HttpStatus.NOT_FOUND, IResponse.GET_FAIL_PRODUCT_NOT_FOUND));
         iProductRepository.deleteLogicProductById(existingProduct.getId());
     }
 }

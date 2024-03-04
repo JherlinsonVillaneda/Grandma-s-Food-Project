@@ -4,6 +4,7 @@ import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import restaurant.GrandmasFood.common.constant.endpoints.IProductEndpoints;
 import restaurant.GrandmasFood.common.domains.dto.ProductDTO;
@@ -17,7 +18,7 @@ public class productController {
     ProductServiceImpl productService;
 
     @PostMapping(IProductEndpoints.PRODUCT_CREATE)
-    public ResponseEntity<ProductDTO> createProduct(@RequestBody @Valid ProductEntity productEntity){
+    public ResponseEntity<ProductDTO> createProduct(@Valid @RequestBody ProductEntity productEntity){
         ProductDTO productSaved = productService.createProduct(productEntity);
         return ResponseEntity.status(HttpStatus.CREATED).body(productSaved);
     }
