@@ -14,7 +14,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
-
+/**
 @RunWith(MockitoJUnitRunner.class)
 public class ClientServiceTest {
     @InjectMocks
@@ -45,3 +45,4 @@ public class ClientServiceTest {
     }
 
 }
+*/

@@ -5,6 +5,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import restaurant.GrandmasFood.common.constant.endpoints.IClientEndPoints;
+import restaurant.GrandmasFood.common.domains.dto.ClientDTO;
 import restaurant.GrandmasFood.common.domains.entity.client.ClientEntity;
 import restaurant.GrandmasFood.services.clientService.impl.ClientServiceImpl;
 
@@ -15,8 +16,8 @@ public class ClientController {
     private ClientServiceImpl clientService;
 
     @PostMapping()
-    public ResponseEntity<ClientEntity> createClient(@RequestBody ClientEntity clientEntity){
-        ClientEntity saveClient = clientService.createClient(clientEntity);
+    public ResponseEntity<ClientEntity> createClient(@RequestBody ClientDTO clientDTO){
+        ClientEntity saveClient = clientService.createClient(clientDTO);
         return ResponseEntity.status(HttpStatus.CREATED).body(saveClient);
     }
 
@@ -26,7 +27,7 @@ public class ClientController {
     }
 
     @PutMapping(IClientEndPoints.CLIENT_DOCUMENT)
-    public ResponseEntity<ClientEntity> updateClient(@PathVariable("document")String document, @RequestBody ClientEntity updateClient){
+    public ResponseEntity<ClientEntity> updateClient(@PathVariable("document")String document, @RequestBody ClientDTO updateClient){
         ClientEntity saveClient = clientService.updateClient(document, updateClient);
         return ResponseEntity.status(HttpStatus.CREATED).body(saveClient);
     }

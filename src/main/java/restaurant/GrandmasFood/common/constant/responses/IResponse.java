@@ -1,18 +1,18 @@
 package restaurant.GrandmasFood.common.constant.responses;
 
 public interface IResponse {
-    String OPERATION_SUCCESS = "Operación exitosa";
-    String OPERATION_FAIL = "Operación fallida";
-    String CREATE_SUCCESS = "OK se creo correctamente";
-    String CREATE_FAIL = "No se creo correctamente";
-    String UPDATE_SUCCESS = "OK se actualizo correctamente";
-    String UPDATE_FAIL = "No se actualizo correctamente";
-    String DELETE_SUCCESS = "OK se elimino correctamente";
-    String DELETE_FAIL = "No se elimino correctamente";
-    String NOT_FOUND = "Operación fallida. no requerida";
-    String DOCUMENT_FAIL = "No se pudo convertir el documento: ";
-    String INTERNAL_SERVER_ERROR = "Internal Server error. Error inesperado del sistema";
-    String INTERNAL_SERVER = "Error interno del servidor";
+
+    // ERRORS FOR CLIENTS
+    String CREATE_CLIENT_BAD_REQUEST = "Clients data invalid";
+
+    String INTERNAL_SERVER_ERROR = "Internal server error";
+    String CREATE_CLIENT_CONFLICT = "A client with the same document already exists";
+
+    String GET_CLIENT_SERVER_ERROR =  "An error occurred while retrieving the client";
+
+    String CLIENT_NOT_FOUND = String.format("Client %s Not Found");
+
+    String GET_CLIENT_BAD_REQUEST = "Invalid document";
 
     // ERRORS FOR PRODUCTS
     String CREATE_FAIL_NAME_EXISTS = "The product with name '%s' already exists.";

@@ -2,12 +2,13 @@ package restaurant.GrandmasFood.common.domains.dto;
 
 import lombok.*;
 
-@AllArgsConstructor
-@NoArgsConstructor
 @Getter
 @Setter
 @ToString
 @Data
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class ClientDTO {
     //Data Transfer Object
     //Entidad - Controlador
