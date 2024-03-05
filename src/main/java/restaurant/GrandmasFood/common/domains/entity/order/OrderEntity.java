@@ -7,6 +7,7 @@ import lombok.*;
 import restaurant.GrandmasFood.common.domains.entity.client.ClientEntity;
 import restaurant.GrandmasFood.common.domains.entity.product.ProductEntity;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 
 @Entity(name = "order_entity")
@@ -22,49 +23,43 @@ public class OrderEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
-    @Column
+    @Column(unique = true, length = 36)
     private String uuid;
+
+    @Column(name = "creation_date_time")
+    private LocalDateTime creationDateTime;
 
     @Column
     @NotBlank
     private Integer quantity;
 
-    @Column(name = "info_additional", length = 511)
+    @Column(name = "extra_information", length = 511)
     @NotBlank
-    private String infoAdditional;
+    private String extraInformation;
 
     @Column(name = "sub_total")
-    @NotBlank
     private Double subTotal;
 
     @Column
-    @NotBlank
     private Double tax;
 
-    @Column
-    @NotBlank
-    private Double total;
+    @Column(name = "grand_total")
+    private Double grandTotal;
 
     @Column(columnDefinition = "boolean default false")
-    @NotNull
-    private Boolean ordered;
+    private Boolean delivered;
 
-    @Column(name = "date_ordered")
-    @NotBlank
-    private Date dateOrdered;
-
-    @Column(name = "date_order")
-    @NotBlank
-    private Date dateOrder;
+    @Column(name = "delivered_date")
+    private LocalDateTime deliveredDate;
 
     //relation
     @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "client_document")
-    private ClientEntity documentClient;
+    @JoinColumn(name = "client_document", referencedColumnName = "document")
+    private ClientEntity clientDocument;
 
     //relation
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "product_uuid", referencedColumnName = "uuid")
-    private ProductEntity uuidProduct;
+    private ProductEntity productUuid;
 
 }
