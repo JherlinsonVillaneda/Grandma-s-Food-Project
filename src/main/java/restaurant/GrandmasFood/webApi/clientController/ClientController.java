@@ -16,14 +16,14 @@ public class ClientController {
     private ClientServiceImpl clientService;
 
     @PostMapping()
-    public ResponseEntity<ClientEntity> createClient(@RequestBody ClientDTO clientDTO){
-        ClientEntity saveClient = clientService.createClient(clientDTO);
+    public ResponseEntity<ClientDTO> createClient(@RequestBody ClientDTO clientDTO){
+        ClientDTO saveClient = clientService.createClient(clientDTO);
         return ResponseEntity.status(HttpStatus.CREATED).body(saveClient);
     }
 
     @GetMapping(IClientEndPoints.CLIENT_DOCUMENT)
-    public ResponseEntity<ClientEntity> getClient(@PathVariable("document") String document){
-        return new ResponseEntity<>(clientService.getClient(document), HttpStatus.OK);
+    public ResponseEntity<ClientDTO> getClient(@PathVariable("document") String document, ClientDTO clientDTO){
+        return new ResponseEntity<>(clientService.getClient(document, clientDTO), HttpStatus.OK);
     }
 
     @PutMapping(IClientEndPoints.CLIENT_DOCUMENT)

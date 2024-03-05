@@ -25,4 +25,15 @@ public class ClientConverter {
         return clientEntity;
     }
 
+    public ClientDTO convertClientEntityToClientDTO(ClientEntity clientEntity){
+        ClientDTO clientDTO = new ClientDTO();
+        try {
+            clientDTO = MapperConfig.modelMapper().map(clientEntity, ClientDTO.class);
+        }
+        catch (Exception e){
+            log.error(HttpStatus.CONFLICT);
+        }
+        return clientDTO;
+    }
+
 }
