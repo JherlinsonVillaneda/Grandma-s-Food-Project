@@ -14,13 +14,13 @@ import java.util.UUID;
 @Repository
 public interface IProductRepository extends JpaRepository<ProductEntity, Long> {
 
-    @Query("SELECT p FROM product p WHERE p.uuid = :uuid AND p.removed = true")
+    @Query("SELECT p FROM product p WHERE p.uuid = :uuid AND p.removed = false")
     Optional<ProductEntity> findProductByUuid(@Param("uuid") String uuid);
 
     Optional<ProductEntity> findProductByName(String name);
 
     @Transactional
     @Modifying
-    @Query("UPDATE product p SET p.available = false, p.removed = false WHERE p.id = :id_product")
+    @Query("UPDATE product p SET p.available = false, p.removed = true WHERE p.id = :id_product")
     void deleteLogicProductById(@Param("id_product") Long id);
 }
