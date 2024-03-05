@@ -1,4 +1,4 @@
-package restaurant.GrandmasFood.repositories.ClientRepository;
+package restaurant.GrandmasFood.repository.ClientRepository;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 import restaurant.GrandmasFood.common.domains.entity.client.ClientEntity;
