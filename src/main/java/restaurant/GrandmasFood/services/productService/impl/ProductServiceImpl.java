@@ -18,6 +18,8 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -116,5 +118,26 @@ public class ProductServiceImpl implements IProductService {
         ProductEntity existingProduct = iProductRepository.findProductByUuid(uuid).orElseThrow(()->
                 new ResponseStatusException(HttpStatus.NOT_FOUND, IResponse.GET_FAIL_PRODUCT_NOT_FOUND));
         iProductRepository.deleteLogicProductById(existingProduct.getId());
+    }
+
+    //Bonus track
+    @Override
+    public List<ProductDTO> getProductsByName(String query){
+        if (query.isBlank() || query.isEmpty()){
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, IResponse.GET_FAIL_WITH_PARAM);
+        }
+
+        List<ProductEntity> productEntityList = iProductRepository.findProductsByName(query.toUpperCase());
+        List<ProductDTO> productDTOList = new ArrayList<>();
+
+        if (productEntityList.isEmpty()){
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, String.format(IResponse.GET_FAIL_WITH_PARAM_NAME, query));
+        }
+
+        for(ProductEntity product : productEntityList){
+            productDTOList.add(productConverter.convertProductEntityToDto(product));
+        }
+
+        return productDTOList;
     }
 }
