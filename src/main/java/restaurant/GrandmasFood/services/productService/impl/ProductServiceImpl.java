@@ -8,11 +8,14 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 import restaurant.GrandmasFood.common.constant.responses.IResponse;
+import restaurant.GrandmasFood.common.converter.product.ProductConverter;
 import restaurant.GrandmasFood.common.domains.dto.ProductDTO;
 import restaurant.GrandmasFood.common.domains.entity.product.ProductEntity;
-import restaurant.GrandmasFood.repositories.productRepository.IProductRepository;
+import restaurant.GrandmasFood.repository.productRepository.IProductRepository;
 import restaurant.GrandmasFood.services.productService.IProductService;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.util.Optional;
@@ -25,10 +28,12 @@ public class ProductServiceImpl implements IProductService {
     IProductRepository iProductRepository;
 
     @Autowired
-    ModelMapper modelMapper;
+    ProductConverter productConverter;
 
     @Override
-    public ProductDTO createProduct(@Valid ProductEntity product) {
+    public ProductDTO createProduct(@Valid ProductDTO productDto) {
+        ProductEntity product = productConverter.convertProductDtoToEntity(productDto);
+
         Optional<ProductEntity> find = iProductRepository.findProductByName(product.getName());
         if (find.isPresent()){
             throw new ResponseStatusException(HttpStatus.CONFLICT, String.format(IResponse.CREATE_FAIL_NAME_EXISTS, product.getName()));
@@ -38,7 +43,8 @@ public class ProductServiceImpl implements IProductService {
             throw new ResponseStatusException(HttpStatus.CONFLICT, IResponse.PRICE_NOT_VALID);
         }
 
-        product.setPrice(formatPrice(product.getPrice()));
+        BigDecimal price = BigDecimal.valueOf(product.getPrice()).setScale(2, RoundingMode.HALF_UP);
+        product.setPrice(Double.valueOf(price.toString()));
         product.setUuid(UUID.randomUUID().toString());
 
         if ((product.getName() == null || product.getName().isEmpty()) || (product.getDescription() == null || product.getDescription().isEmpty()) ) {
@@ -48,16 +54,7 @@ public class ProductServiceImpl implements IProductService {
         product.setRemoved(false);
         iProductRepository.save(product);
 
-        return modelMapper.map(product, ProductDTO.class);
-
-    }
-
-    private double formatPrice(double price) {
-        DecimalFormatSymbols symbols = new DecimalFormatSymbols();
-        symbols.setDecimalSeparator('.');
-        DecimalFormat df = new DecimalFormat("#.00", symbols);
-        String formatted = df.format(price);
-        return Double.parseDouble(formatted);
+        return productConverter.convertProductEntityToDto(product);
     }
 
     @Override
@@ -73,11 +70,13 @@ public class ProductServiceImpl implements IProductService {
         ProductEntity product = iProductRepository.findProductByUuid(uuid).orElseThrow(()->
                 new ResponseStatusException(HttpStatus.NOT_FOUND, IResponse.GET_FAIL_PRODUCT_NOT_FOUND));
 
-        return modelMapper.map(product, ProductDTO.class);
+        return productConverter.convertProductEntityToDto(product);
     }
 
     @Override
-    public ProductDTO updateProduct(String uuid, ProductEntity product){
+    public ProductDTO updateProduct(String uuid, ProductDTO productDto){
+        ProductEntity product = productConverter.convertProductDtoToEntity(productDto);
+
         ProductEntity existingProduct = iProductRepository.findProductByUuid(uuid).orElseThrow(()->
                 new ResponseStatusException(HttpStatus.NOT_FOUND, IResponse.GET_FAIL_WITH_UUID));
 
@@ -92,7 +91,7 @@ public class ProductServiceImpl implements IProductService {
 
             iProductRepository.save(existingProduct);
 
-            return modelMapper.map(existingProduct, ProductDTO.class);
+            return productConverter.convertProductEntityToDto(existingProduct);
         }
     }
 

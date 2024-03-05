@@ -8,7 +8,7 @@ import restaurant.GrandmasFood.common.constant.responses.IResponse;
 import restaurant.GrandmasFood.common.converter.client.ClientConverter;
 import restaurant.GrandmasFood.common.domains.dto.ClientDTO;
 import restaurant.GrandmasFood.common.domains.entity.client.ClientEntity;
-import restaurant.GrandmasFood.repositories.ClientRepository.IClientRepository;
+import restaurant.GrandmasFood.repository.ClientRepository.IClientRepository;
 import restaurant.GrandmasFood.services.clientService.IClientService;
 
 import java.util.Optional;

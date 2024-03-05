@@ -1,25 +1,23 @@
-package restaurant.GrandmasFood.webApi.productsController;
+package restaurant.GrandmasFood.webApi.productController;
 
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import restaurant.GrandmasFood.common.constant.endpoints.IProductEndpoints;
 import restaurant.GrandmasFood.common.domains.dto.ProductDTO;
-import restaurant.GrandmasFood.common.domains.entity.product.ProductEntity;
 import restaurant.GrandmasFood.services.productService.impl.ProductServiceImpl;
 
 @RestController
-public class productController {
+public class ProductController {
 
     @Autowired
     ProductServiceImpl productService;
 
     @PostMapping(IProductEndpoints.PRODUCT_CREATE)
-    public ResponseEntity<ProductDTO> createProduct(@Valid @RequestBody ProductEntity productEntity){
-        ProductDTO productSaved = productService.createProduct(productEntity);
+    public ResponseEntity<ProductDTO> createProduct(@Valid @RequestBody ProductDTO productDTO){
+        ProductDTO productSaved = productService.createProduct(productDTO);
         return ResponseEntity.status(HttpStatus.CREATED).body(productSaved);
     }
 
@@ -29,8 +27,8 @@ public class productController {
     }
 
     @PutMapping(IProductEndpoints.PRODUCT_PUT)
-    public ResponseEntity<ProductDTO> updateProduct(@PathVariable("uuid") String uuid, @RequestBody ProductEntity product){
-         return ResponseEntity.status(HttpStatus.ACCEPTED).body(productService.updateProduct(uuid, product));
+    public ResponseEntity<ProductDTO> updateProduct(@PathVariable("uuid") String uuid, @RequestBody ProductDTO productDto){
+         return ResponseEntity.status(HttpStatus.ACCEPTED).body(productService.updateProduct(uuid, productDto));
     }
 
     @DeleteMapping(IProductEndpoints.PRODUCT_DELETE)

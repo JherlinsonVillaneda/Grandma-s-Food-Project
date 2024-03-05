@@ -1,4 +1,4 @@
-package restaurant.GrandmasFood.repositories.productRepository;
+package restaurant.GrandmasFood.repository.productRepository;
 
 import jakarta.transaction.Transactional;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -9,7 +9,6 @@ import org.springframework.stereotype.Repository;
 import restaurant.GrandmasFood.common.domains.entity.product.ProductEntity;
 
 import java.util.Optional;
-import java.util.UUID;
 
 @Repository
 public interface IProductRepository extends JpaRepository<ProductEntity, Long> {
