@@ -47,7 +47,6 @@ public class ClientServiceImpl implements IClientService {
     }
 
     public ClientDTO getClient(String document, ClientDTO clientDTO){
-        ClientEntity clientEntity = clientConverter.convertClientDTOToClientEntity(clientDTO);
         if (!document.matches("^CC-\\d+$")) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, IResponse.CLIENT_BAD_REQUEST);
         }
@@ -55,8 +54,8 @@ public class ClientServiceImpl implements IClientService {
         if (!find.isPresent()){
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, String.format(IResponse.CLIENT_NOT_FOUND, document));
         }
+        ClientEntity clientEntity = find.get();
         return clientConverter.convertClientEntityToClientDTO(clientEntity);
-
     }
 
     /**
@@ -65,30 +64,29 @@ public class ClientServiceImpl implements IClientService {
      * @exception @Conflict
      * @exception @Bad Request
      */
-    public ClientEntity updateClient(String document, ClientDTO updatedClient){
+    public ClientDTO updateClient(String document, ClientDTO updatedClient) {
+        ClientEntity existingClient = iClientRepository.findClientByDocument(document)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, String.format(IResponse.CLIENT_NOT_FOUND, document)));
 
-        ClientEntity existingClient = iClientRepository.findClientByDocument(document).orElseThrow(() ->
-                new ResponseStatusException(HttpStatus.NOT_FOUND, String.format(IResponse.CLIENT_NOT_FOUND, document)));
         if (updatedClient.equals(existingClient)) {
             throw new ResponseStatusException(HttpStatus.CONFLICT);
         }
 
-        if (updatedClient.getFullName() == null || updatedClient.getFullName().isEmpty()|| updatedClient.getEmail() == null ||
-                updatedClient.getEmail().isEmpty() || updatedClient.getAddress() == null ||
-                updatedClient.getAddress().isEmpty() || updatedClient.getCellphone() == null ||
-                updatedClient.getCellphone().isEmpty()) {
+        if (updatedClient.getFullName() == null || updatedClient.getFullName().trim().isEmpty() || updatedClient.getEmail() == null ||
+                updatedClient.getEmail().trim().isEmpty() || updatedClient.getAddress() == null ||
+                updatedClient.getAddress().trim().isEmpty() || updatedClient.getCellphone() == null ||
+                updatedClient.getCellphone().trim().isEmpty()) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, IResponse.CREATE_CLIENT_BAD_REQUEST);
         }
-
         existingClient.setCellphone(updatedClient.getCellphone());
         existingClient.setFullName(updatedClient.getFullName());
         existingClient.setEmail(updatedClient.getEmail());
         existingClient.setAddress(updatedClient.getAddress());
 
         try {
-            return iClientRepository.save(existingClient);
-        }
-        catch (Exception e){
+            ClientEntity savedClient = iClientRepository.save(existingClient);
+            return clientConverter.convertClientEntityToClientDTO(savedClient);
+        } catch (Exception e) {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, IResponse.INTERNAL_SERVER_ERROR, e);
         }
     }

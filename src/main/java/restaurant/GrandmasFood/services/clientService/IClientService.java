@@ -6,6 +6,6 @@ import restaurant.GrandmasFood.common.domains.entity.client.ClientEntity;
 public interface IClientService {
     ClientDTO createClient(ClientDTO clientDTO);
     ClientDTO getClient(String document, ClientDTO clientDTO);
-    ClientEntity updateClient(String document, ClientDTO updatedClient);
+    ClientDTO updateClient(String document, ClientDTO updatedClient);
      void deleteClient(String document);
 }
