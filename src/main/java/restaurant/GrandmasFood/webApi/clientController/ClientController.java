@@ -27,8 +27,8 @@ public class ClientController {
     }
 
     @PutMapping(IClientEndPoints.CLIENT_DOCUMENT)
-    public ResponseEntity<ClientEntity> updateClient(@PathVariable("document")String document, @RequestBody ClientDTO updateClient){
-        ClientEntity saveClient = clientService.updateClient(document, updateClient);
+    public ResponseEntity<ClientDTO> updateClient(@PathVariable("document")String document, @RequestBody ClientDTO updateClient){
+        ClientDTO saveClient = clientService.updateClient(document, updateClient);
         return ResponseEntity.status(HttpStatus.CREATED).body(saveClient);
     }
 
