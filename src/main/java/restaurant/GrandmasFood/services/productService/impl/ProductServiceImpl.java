@@ -6,7 +6,6 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.server.ResponseStatusException;
 import restaurant.GrandmasFood.common.constant.responses.IResponse;
 import restaurant.GrandmasFood.common.domains.dto.ProductDTO;
@@ -15,6 +14,7 @@ import restaurant.GrandmasFood.repositories.productRepository.IProductRepository
 import restaurant.GrandmasFood.services.productService.IProductService;
 
 import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -33,13 +33,12 @@ public class ProductServiceImpl implements IProductService {
         if (find.isPresent()){
             throw new ResponseStatusException(HttpStatus.CONFLICT, String.format(IResponse.CREATE_FAIL_NAME_EXISTS, product.getName()));
         }
-        DecimalFormat df = new DecimalFormat("#.00");
 
         if (product.getPrice() < 10D){
             throw new ResponseStatusException(HttpStatus.CONFLICT, IResponse.PRICE_NOT_VALID);
         }
 
-        product.setPrice(Double.parseDouble(df.format(product.getPrice())));
+        product.setPrice(formatPrice(product.getPrice()));
         product.setUuid(UUID.randomUUID().toString());
 
         if ((product.getName() == null || product.getName().isEmpty()) || (product.getDescription() == null || product.getDescription().isEmpty()) ) {
@@ -53,11 +52,20 @@ public class ProductServiceImpl implements IProductService {
 
     }
 
+    private double formatPrice(double price) {
+        DecimalFormatSymbols symbols = new DecimalFormatSymbols();
+        symbols.setDecimalSeparator('.');
+        DecimalFormat df = new DecimalFormat("#.00", symbols);
+        String formatted = df.format(price);
+        return Double.parseDouble(formatted);
+    }
+
     @Override
     public ProductDTO getProduct(String uuid){
 
         try {
             UUID valid = UUID.fromString(uuid);
+            System.out.println("The UUID is valid.");
         } catch (IllegalArgumentException e) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, IResponse.GET_FAIL_WITH_UUID);
         }
