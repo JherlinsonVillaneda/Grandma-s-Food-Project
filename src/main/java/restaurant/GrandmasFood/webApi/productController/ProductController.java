@@ -7,7 +7,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import restaurant.GrandmasFood.common.constant.endpoints.IProductEndpoints;
 import restaurant.GrandmasFood.common.domains.dto.ProductDTO;
+import restaurant.GrandmasFood.common.domains.entity.product.ProductEntity;
 import restaurant.GrandmasFood.services.productService.impl.ProductServiceImpl;
+
+import java.util.List;
 
 @RestController
 public class ProductController {
@@ -35,6 +38,12 @@ public class ProductController {
     public ResponseEntity<Void> deleteProduct(@PathVariable("uuid") String uuid){
         productService.deleteProduct(uuid);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+    }
+
+    //Bonus track
+    @GetMapping(IProductEndpoints.GET_PRODUCT_WITH_PARAM)
+    public ResponseEntity<List<ProductDTO>> getProducts(@RequestParam("q") String q){
+        return new ResponseEntity<>(productService.getProductsByName(q), HttpStatus.OK);
     }
 
 

@@ -11,11 +11,5 @@ public interface IProductEndpoints {
     String PRODUCT_CREATE="/products";
 
     String PRODUCT_DELETE="/products/{uuid}";
-
-
-
-
-
-
-
+    String GET_PRODUCT_WITH_PARAM = "/products/search";
 }

@@ -8,6 +8,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import restaurant.GrandmasFood.common.domains.entity.product.ProductEntity;
 
+import java.util.List;
 import java.util.Optional;
 
 @Repository
@@ -17,6 +18,9 @@ public interface IProductRepository extends JpaRepository<ProductEntity, Long> {
     Optional<ProductEntity> findProductByUuid(@Param("uuid") String uuid);
 
     Optional<ProductEntity> findProductByName(String name);
+
+    @Query("SELECT p FROM product p WHERE p.name like %:name% order by p.name asc")
+    List<ProductEntity> findProductsByName(@Param("name") String name);
 
     @Transactional
     @Modifying
