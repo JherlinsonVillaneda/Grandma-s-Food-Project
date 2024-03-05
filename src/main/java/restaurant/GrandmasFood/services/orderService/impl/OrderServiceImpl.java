@@ -10,9 +10,9 @@ import restaurant.GrandmasFood.common.domains.dto.OrderDTO;
 import restaurant.GrandmasFood.common.domains.entity.client.ClientEntity;
 import restaurant.GrandmasFood.common.domains.entity.order.OrderEntity;
 import restaurant.GrandmasFood.common.domains.entity.product.ProductEntity;
-import restaurant.GrandmasFood.repositories.ClientRepository.IClientRepository;
-import restaurant.GrandmasFood.repositories.OrderRepository.IOrderRepository;
-import restaurant.GrandmasFood.repositories.productRepository.IProductRepository;
+import restaurant.GrandmasFood.repository.ClientRepository.IClientRepository;
+import restaurant.GrandmasFood.repository.OrderRepository.IOrderRepository;
+import restaurant.GrandmasFood.repository.productRepository.IProductRepository;
 import restaurant.GrandmasFood.services.orderService.IOrderService;
 
 import java.time.LocalDateTime;
