@@ -15,6 +15,8 @@ public interface IResponse {
 
     String GET_CLIENT_BAD_REQUEST = "Invalid document";
 
+    String ORDER_NOT_FOUND = "Order Not Found";
+
     // ERRORS FOR PRODUCTS
     String CREATE_FAIL_NAME_EXISTS = "The product with name '%s' already exists.";
     String NOT_DIFFERENT_VALUES = "There aren't different values.";
