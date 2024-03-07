@@ -1,7 +1,5 @@
 package restaurant.GrandmasFood.services.clientService.impl;
 
-import org.apache.logging.log4j.message.StringFormattedMessage;
-import org.modelmapper.internal.bytebuddy.implementation.bytecode.Throw;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -12,6 +10,7 @@ import restaurant.GrandmasFood.common.domains.dto.ClientDTO;
 import restaurant.GrandmasFood.common.domains.entity.client.ClientEntity;
 import restaurant.GrandmasFood.repository.ClientRepository.IClientRepository;
 import restaurant.GrandmasFood.services.clientService.IClientService;
+import restaurant.GrandmasFood.exception.client.NotFoundException;
 
 import java.util.Optional;
 
@@ -50,20 +49,10 @@ public class ClientServiceImpl implements IClientService {
         if (!document.matches("^CC-\\d+$")) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, IResponse.CLIENT_BAD_REQUEST);
         }
-        Optional<ClientEntity> find = iClientRepository.findClientByDocument(document);
-        if (!find.isPresent()){
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, String.format(IResponse.CLIENT_NOT_FOUND, document));
-        }
-        ClientEntity clientEntity = find.get();
-        return clientConverter.convertClientEntityToClientDTO(clientEntity);
+        ClientEntity find = iClientRepository.findClientByDocument(document)
+                .orElseThrow(()-> new NotFoundException("Document " + document + " not found"));
+        return clientConverter.convertClientEntityToClientDTO(find);
     }
-
-    /**
-     * Se necesita corregir el tema de excepciones
-     * @exception  @NotFound
-     * @exception @Conflict
-     * @exception @Bad Request
-     */
     public ClientDTO updateClient(String document, ClientDTO updatedClient) {
         ClientEntity existingClient = iClientRepository.findClientByDocument(document)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, String.format(IResponse.CLIENT_NOT_FOUND, document)));

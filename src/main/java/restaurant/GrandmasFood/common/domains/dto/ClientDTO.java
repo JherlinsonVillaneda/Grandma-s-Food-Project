@@ -1,6 +1,7 @@
 package restaurant.GrandmasFood.common.domains.dto;
 
 import lombok.*;
+import org.springframework.stereotype.Component;
 
 @Getter
 @Setter
@@ -9,6 +10,7 @@ import lombok.*;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
+@Component
 public class ClientDTO {
     //Data Transfer Object
     //Entidad - Controlador
