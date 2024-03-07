@@ -33,4 +33,7 @@ public class ClientEntity {
     @Column(length = 500)
     @NotEmpty
     private String address;
+
+    @Column(columnDefinition = "boolean default false", nullable = false)
+    private Boolean removed;
 }

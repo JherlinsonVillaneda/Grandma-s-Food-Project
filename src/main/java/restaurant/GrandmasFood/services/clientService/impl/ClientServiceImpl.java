@@ -11,7 +11,6 @@ import restaurant.GrandmasFood.common.domains.entity.client.ClientEntity;
 import restaurant.GrandmasFood.repository.ClientRepository.IClientRepository;
 import restaurant.GrandmasFood.services.clientService.IClientService;
 import restaurant.GrandmasFood.exception.client.NotFoundException;
-
 import java.util.Optional;
 
 
@@ -80,9 +79,6 @@ public class ClientServiceImpl implements IClientService {
         }
     }
 
-    /**
-     * Falta aplicar el borrado lógico.
-     */
     public void deleteClient(String document){
         ClientEntity existingClient = iClientRepository.findClientByDocument(document).orElseThrow(()->
                 new ResponseStatusException(HttpStatus.NOT_FOUND, String.format("Client %s Not Found", document )));
