@@ -19,4 +19,6 @@ public class ClientDTO {
     private String email;
     private String cellphone;
     private String address;
+    private boolean removed;
+
 }
