@@ -27,6 +27,10 @@ public class ClientController {
         return new ResponseEntity<>(clientService.getClient(document, clientDTO), HttpStatus.OK);
     }
 
+    /*
+        get all clients
+     */
+
     @GetMapping()
     public ResponseEntity<List<ClientDTO>> getClients(
             @RequestParam(defaultValue = "DOCUMENT") String orderBy,
@@ -45,5 +49,6 @@ public class ClientController {
         clientService.deleteClient(document);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
+
 
 }
