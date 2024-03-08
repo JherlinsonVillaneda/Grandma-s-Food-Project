@@ -1,6 +1,7 @@
 package restaurant.GrandmasFood.services.clientService.impl;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -11,6 +12,9 @@ import restaurant.GrandmasFood.common.domains.entity.client.ClientEntity;
 import restaurant.GrandmasFood.repository.ClientRepository.IClientRepository;
 import restaurant.GrandmasFood.services.clientService.IClientService;
 import restaurant.GrandmasFood.exception.client.NotFoundException;
+
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 
@@ -52,6 +56,29 @@ public class ClientServiceImpl implements IClientService {
                 .orElseThrow(()-> new NotFoundException("Document " + document + " not found"));
         return clientConverter.convertClientEntityToClientDTO(find);
     }
+
+    public List<ClientDTO> getAllClients(String orderBy, String direction) {
+        List<ClientEntity> clients;
+        switch (orderBy) {
+            case "NAME":
+                clients = direction.equals("DESC") ? iClientRepository.findAllByOrderByFullNameDesc() :
+                        iClientRepository.findAllByOrderByFullNameAsc();
+                break;
+            case "ADDRESS":
+                clients = direction.equals("DESC") ? iClientRepository.findAllByOrderByAddressDesc() :
+                        iClientRepository.findAllByOrderByAddressAsc();
+                break;
+            case "DOCUMENT":
+            default:
+                clients = direction.equals("DESC") ? iClientRepository.findAllByOrderByDocumentDesc() :
+                        iClientRepository.findAllByOrderByDocumentAsc();
+                break;
+        }
+
+        return clientConverter.convertClientEntityListToClientDTOList(clients);
+    }
+
+
     public ClientDTO updateClient(String document, ClientDTO updatedClient) {
         ClientEntity existingClient = iClientRepository.findClientByDocument(document)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, String.format(IResponse.CLIENT_NOT_FOUND, document)));

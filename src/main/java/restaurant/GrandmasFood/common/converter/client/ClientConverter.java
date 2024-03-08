@@ -1,6 +1,5 @@
 package restaurant.GrandmasFood.common.converter.client;
 
-
 import lombok.extern.log4j.Log4j2;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
@@ -9,6 +8,8 @@ import restaurant.GrandmasFood.common.domains.entity.client.ClientEntity;
 import restaurant.GrandmasFood.config.MapperConfig;
 
 import javax.print.DocFlavor;
+import java.util.ArrayList;
+import java.util.List;
 
 @Component
 @Log4j2
@@ -36,4 +37,12 @@ public class ClientConverter {
         return clientDTO;
     }
 
+    public List<ClientDTO> convertClientEntityListToClientDTOList(List<ClientEntity> clientEntities) {
+        List<ClientDTO> clientDTOs = new ArrayList<>();
+        for (ClientEntity clientEntity : clientEntities) {
+            clientDTOs.add(convertClientEntityToClientDTO(clientEntity));
+        }
+        return clientDTOs;
+    }
 }
+

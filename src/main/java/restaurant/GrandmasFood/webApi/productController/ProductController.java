@@ -7,7 +7,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import restaurant.GrandmasFood.common.constant.endpoints.IProductEndpoints;
 import restaurant.GrandmasFood.common.domains.dto.ProductDTO;
-import restaurant.GrandmasFood.common.domains.entity.product.ProductEntity;
 import restaurant.GrandmasFood.services.productService.impl.ProductServiceImpl;
 
 import java.util.List;
