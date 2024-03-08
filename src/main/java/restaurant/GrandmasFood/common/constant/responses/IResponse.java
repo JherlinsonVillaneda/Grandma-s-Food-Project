@@ -18,7 +18,7 @@ public interface IResponse {
     String ORDER_NOT_FOUND = "Order Not Found";
 
     // ERRORS FOR PRODUCTS
-    String CREATE_FAIL_NAME_EXISTS = "The product with name '%s' already exists.";
+    String CREATE_FAIL_NAME_EXISTS = "The product with the name provided already exists.";
     String NOT_DIFFERENT_VALUES = "There aren't different values.";
     String PRICE_NOT_VALID = "The price of the product is invalid.";
     String ERRORS_WITH_NAMES_OR_DESCRIPTION = "The name or the description of the product has errors.";

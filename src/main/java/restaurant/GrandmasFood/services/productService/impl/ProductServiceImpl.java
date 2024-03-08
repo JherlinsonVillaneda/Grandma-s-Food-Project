@@ -2,7 +2,6 @@ package restaurant.GrandmasFood.services.productService.impl;
 
 import jakarta.persistence.Transient;
 import jakarta.validation.Valid;
-import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -11,13 +10,15 @@ import restaurant.GrandmasFood.common.constant.responses.IResponse;
 import restaurant.GrandmasFood.common.converter.product.ProductConverter;
 import restaurant.GrandmasFood.common.domains.dto.ProductDTO;
 import restaurant.GrandmasFood.common.domains.entity.product.ProductEntity;
+import restaurant.GrandmasFood.exception.product.ConflictProductException;
+import restaurant.GrandmasFood.exception.product.NotProductFoundException;
+import restaurant.GrandmasFood.exception.product.ProductAlreadyExistsException;
+import restaurant.GrandmasFood.exception.product.BadRequestProductException;
 import restaurant.GrandmasFood.repository.productRepository.IProductRepository;
 import restaurant.GrandmasFood.services.productService.IProductService;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.text.DecimalFormat;
-import java.text.DecimalFormatSymbols;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -38,11 +39,11 @@ public class ProductServiceImpl implements IProductService {
 
         Optional<ProductEntity> find = iProductRepository.findProductByName(product.getName());
         if (find.isPresent()){
-            throw new ResponseStatusException(HttpStatus.CONFLICT, String.format(IResponse.CREATE_FAIL_NAME_EXISTS, product.getName()));
+            throw new ProductAlreadyExistsException("The name of the product in the request already exists.");
         }
 
         if (product.getPrice() < 10D){
-            throw new ResponseStatusException(HttpStatus.CONFLICT, IResponse.PRICE_NOT_VALID);
+            throw new BadRequestProductException("The value of the price is invalid.");
         }
 
         BigDecimal price = BigDecimal.valueOf(product.getPrice()).setScale(2, RoundingMode.HALF_UP);
@@ -50,7 +51,7 @@ public class ProductServiceImpl implements IProductService {
         product.setUuid(UUID.randomUUID().toString());
 
         if ((product.getName() == null || product.getName().isEmpty()) || (product.getDescription() == null || product.getDescription().isEmpty()) ) {
-            throw new ResponseStatusException(HttpStatus.CONFLICT, IResponse.ERRORS_WITH_NAMES_OR_DESCRIPTION);
+            throw new BadRequestProductException("The name or the description of the product is invalid.");
         } else product.setName(product.getName().toUpperCase());
 
         product.setRemoved(false);
@@ -64,13 +65,12 @@ public class ProductServiceImpl implements IProductService {
 
         try {
             UUID valid = UUID.fromString(uuid);
-            System.out.println("The UUID is valid.");
         } catch (IllegalArgumentException e) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, IResponse.GET_FAIL_WITH_UUID);
+            throw new BadRequestProductException("The UUID given is invalid.");
         }
 
         ProductEntity product = iProductRepository.findProductByUuid(uuid).orElseThrow(()->
-                new ResponseStatusException(HttpStatus.NOT_FOUND, IResponse.GET_FAIL_PRODUCT_NOT_FOUND));
+                new NotProductFoundException("Product with the UUID provided is not found."));
 
         return productConverter.convertProductEntityToDto(product);
     }
@@ -80,10 +80,10 @@ public class ProductServiceImpl implements IProductService {
         ProductEntity product = productConverter.convertProductDtoToEntity(productDto);
 
         ProductEntity existingProduct = iProductRepository.findProductByUuid(uuid).orElseThrow(()->
-                new ResponseStatusException(HttpStatus.NOT_FOUND, IResponse.GET_FAIL_WITH_UUID));
+                new NotProductFoundException("Product with the UUID provided is not found."));
 
         if (equalsProducts(existingProduct, product)){
-            throw new ResponseStatusException(HttpStatus.CONFLICT, IResponse.NOT_DIFFERENT_VALUES);
+                throw new ConflictProductException("The values of the request are similar at the actual product.");
         } else {
             existingProduct.setName(product.getName());
             existingProduct.setCategory(product.getCategory());
@@ -112,11 +112,11 @@ public class ProductServiceImpl implements IProductService {
         try {
             UUID valid = UUID.fromString(uuid);
         } catch (IllegalArgumentException e) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, IResponse.GET_FAIL_WITH_UUID);
+            throw new BadRequestProductException("The UUID given is invalid.");
         }
 
         ProductEntity existingProduct = iProductRepository.findProductByUuid(uuid).orElseThrow(()->
-                new ResponseStatusException(HttpStatus.NOT_FOUND, IResponse.GET_FAIL_PRODUCT_NOT_FOUND));
+                new NotProductFoundException("Product with the UUID provided is not found."));
         iProductRepository.deleteLogicProductById(existingProduct.getId());
     }
 
@@ -124,14 +124,14 @@ public class ProductServiceImpl implements IProductService {
     @Override
     public List<ProductDTO> getProductsByName(String query){
         if (query.isBlank() || query.isEmpty()){
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, IResponse.GET_FAIL_WITH_PARAM);
+            throw new BadRequestProductException("The value of the query is invalid.");
         }
 
         List<ProductEntity> productEntityList = iProductRepository.findProductsByName(query.toUpperCase());
         List<ProductDTO> productDTOList = new ArrayList<>();
 
         if (productEntityList.isEmpty()){
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, String.format(IResponse.GET_FAIL_WITH_PARAM_NAME, query));
+            throw new NotProductFoundException("There are no products for the given value.");
         }
 
         for(ProductEntity product : productEntityList){
