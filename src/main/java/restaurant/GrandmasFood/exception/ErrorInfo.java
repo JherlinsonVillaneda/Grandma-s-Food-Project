@@ -13,8 +13,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 public class ErrorInfo {
     private String code;
-    private LocalDateTime timestamp;
+    private String timestamp;
     private String description;
     private String exception;
-
 }
