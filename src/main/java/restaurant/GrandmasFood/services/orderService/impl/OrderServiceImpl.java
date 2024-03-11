@@ -2,6 +2,8 @@ package restaurant.GrandmasFood.services.orderService.impl;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import restaurant.GrandmasFood.common.constant.responses.IOrderResponse;
+import restaurant.GrandmasFood.common.constant.responses.IProductResponse;
 import restaurant.GrandmasFood.common.constant.responses.IResponse;
 import restaurant.GrandmasFood.common.converter.date.DateTimeConverter;
 import restaurant.GrandmasFood.common.converter.order.OrderConverter;
@@ -44,7 +46,7 @@ public class OrderServiceImpl implements IOrderService {
         OrderEntity orderEntity = orderConverter.convertOrderDTOToOrderEntity(order);
 
         clientFound.orElseThrow(() -> new NotFoundException(IResponse.CLIENT_NOT_FOUND));
-        productFound.orElseThrow(() -> new NotProductFoundException(IResponse.ORDER_NOT_FOUND));
+        productFound.orElseThrow(() -> new NotProductFoundException(IProductResponse.GET_FAIL_PRODUCT_NOT_FOUND));
 
         double total = productFound.get().getPrice();
         double tax = 0.19 * total;
@@ -68,7 +70,7 @@ public class OrderServiceImpl implements IOrderService {
     public OrderDTO updateStatus(String uuid, String timestamp) {
         Optional<OrderEntity> orderFound = orderRepository.findOrderByUuid(uuid);
 
-        orderFound.orElseThrow(() -> new OrderNotFoundException(IResponse.ORDER_NOT_FOUND));
+        orderFound.orElseThrow(() -> new OrderNotFoundException(IOrderResponse.ORDER_NOT_FOUND));
 
         orderFound.get().setDelivered(true);
         orderFound.get().setDeliveredDate(timestamp);
@@ -80,7 +82,7 @@ public class OrderServiceImpl implements IOrderService {
         List<OrderEntity> orderList = orderRepository.findOrdersByProductUuid(productUuid);
 
         if(orderList.isEmpty()) {
-            throw new OrderNotFoundException(IResponse.ORDER_NOT_FOUND);
+            throw new OrderNotFoundException(IOrderResponse.ORDER_NOT_FOUND);
         }
         orderRepository.deleteAllByProductUuid(productUuid);
     }
