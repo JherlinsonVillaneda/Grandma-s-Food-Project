@@ -1,14 +1,9 @@
 package restaurant.GrandmasFood.common.domains.entity.order;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 import lombok.*;
 import restaurant.GrandmasFood.common.domains.entity.client.ClientEntity;
 import restaurant.GrandmasFood.common.domains.entity.product.ProductEntity;
-
-import java.time.LocalDateTime;
-import java.util.Date;
 
 @Entity(name = "order_entity")
 @Data
@@ -16,6 +11,7 @@ import java.util.Date;
 @AllArgsConstructor
 @Getter
 @Setter
+@Builder
 @ToString
 public class OrderEntity {
 
@@ -27,14 +23,12 @@ public class OrderEntity {
     private String uuid;
 
     @Column(name = "creation_date_time")
-    private LocalDateTime creationDateTime;
+    private String creationDateTime;
 
     @Column
-    @NotBlank
     private Integer quantity;
 
     @Column(name = "extra_information", length = 511)
-    @NotBlank
     private String extraInformation;
 
     @Column(name = "sub_total")
@@ -50,7 +44,7 @@ public class OrderEntity {
     private Boolean delivered;
 
     @Column(name = "delivered_date")
-    private LocalDateTime deliveredDate;
+    private String deliveredDate;
 
     //relation
     @ManyToOne(fetch = FetchType.EAGER)

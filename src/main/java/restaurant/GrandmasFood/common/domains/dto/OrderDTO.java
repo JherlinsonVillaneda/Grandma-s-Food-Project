@@ -2,7 +2,6 @@ package restaurant.GrandmasFood.common.domains.dto;
 
 import lombok.*;
 
-import java.time.LocalDateTime;
 
 @Getter
 @Setter
@@ -14,7 +13,7 @@ import java.time.LocalDateTime;
 public class OrderDTO {
 
     private String uuid;
-    private LocalDateTime creationDateTime;
+    private String creationDateTime;
     private String clientDocument;
     private String productUuid;
     private Integer quantity;
@@ -23,5 +22,5 @@ public class OrderDTO {
     private Double tax;
     private Double grandTotal;
     private Boolean delivered;
-    private LocalDateTime deliveredDate;
+    private String deliveredDate;
 }
