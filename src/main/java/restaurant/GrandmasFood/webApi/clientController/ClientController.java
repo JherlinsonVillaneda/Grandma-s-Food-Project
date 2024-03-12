@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.*;
 import restaurant.GrandmasFood.common.constant.endpoints.IClientEndPoints;
 import restaurant.GrandmasFood.common.domains.dto.ClientDTO;
 import restaurant.GrandmasFood.services.clientService.impl.ClientServiceImpl;
+import restaurant.GrandmasFood.validator.client.ClientDtoValidator;
 
 import java.util.List;
 
@@ -16,15 +17,20 @@ public class ClientController {
     @Autowired
     private ClientServiceImpl clientService;
 
+    @Autowired
+    private ClientDtoValidator clientDtoValidator;
+
+
     @PostMapping()
     public ResponseEntity<ClientDTO> createClient(@RequestBody ClientDTO clientDTO){
-        ClientDTO saveClient = clientService.createClient(clientDTO);
-        return ResponseEntity.status(HttpStatus.CREATED).body(saveClient);
+        clientDtoValidator.validateCreateClient(clientDTO);
+        return ResponseEntity.status(HttpStatus.CREATED).body(clientService.createClient(clientDTO));
     }
 
     @GetMapping(IClientEndPoints.CLIENT_DOCUMENT)
-    public ResponseEntity<ClientDTO> getClient(@PathVariable("document") String document, ClientDTO clientDTO){
-        return new ResponseEntity<>(clientService.getClient(document, clientDTO), HttpStatus.OK);
+    public ResponseEntity<ClientDTO> getClient(@PathVariable("document") String document){
+        clientDtoValidator.validateGetClient(document);
+        return new ResponseEntity<>(clientService.getClient(document), HttpStatus.OK);
     }
 
     /*
@@ -40,6 +46,7 @@ public class ClientController {
     }
     @PutMapping(IClientEndPoints.CLIENT_DOCUMENT)
     public ResponseEntity<ClientDTO> updateClient(@PathVariable("document")String document, @RequestBody ClientDTO updateClient){
+        clientDtoValidator.validateUpdateClient(document, updateClient);
         ClientDTO saveClient = clientService.updateClient(document, updateClient);
         return ResponseEntity.status(HttpStatus.CREATED).body(saveClient);
     }
