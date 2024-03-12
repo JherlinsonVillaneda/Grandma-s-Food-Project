@@ -1,12 +1,11 @@
 package restaurant.GrandmasFood.validator.client;
 
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
-import org.springframework.web.server.ResponseStatusException;
-import restaurant.GrandmasFood.common.constant.responses.IResponse;
+import restaurant.GrandmasFood.common.constant.responses.IClientResponse;
 import restaurant.GrandmasFood.common.domains.dto.ClientDTO;
 import restaurant.GrandmasFood.exception.client.ClientBadRequestException;
+import restaurant.GrandmasFood.exception.client.ConflictClientException;
 
 
 import java.util.ArrayList;
@@ -78,7 +77,18 @@ public class ClientDtoValidator {
             throw new ClientBadRequestException(
                     String.format("Invalid and incomplete client data: %s", String.join(", ", errorList)));
         }
+        if (clientDTO.getCellphone().equals(clientDTO.getCellphone()) &&
+                clientDTO.getFullName().equals(clientDTO.getFullName()) &&
+                clientDTO.getEmail().equals(clientDTO.getEmail()) &&
+                clientDTO.getAddress().equals(clientDTO.getAddress())) {
+            throw new ConflictClientException(IClientResponse.UPDATE_CLIENT_CONFLICT);
+        }
 
+    }
+    public void validateDeleteClient(String document){
+        if (!document.matches("^(CC|CE|TI)-\\d+$")) {
+            throw new ClientBadRequestException("Invalid document format. It should start with 'CC-', 'CE-' or 'TI-' followed by numbers.");
+        }
     }
 
 }

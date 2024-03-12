@@ -46,9 +46,9 @@ public class ClientController {
             @ApiResponse(responseCode = "404", description = "Client not found"),
             @ApiResponse(responseCode = "500", description = "Internal server error")
     })
-    public ResponseEntity<ClientDTO> getClient(@PathVariable("document") @Parameter(description = "Client document", required = true) String document, @RequestBody(required = false) ClientDTO clientDTO) {
+    public ResponseEntity<ClientDTO> getClient(@PathVariable("document") @Parameter(description = "Client document", required = true) String document)  {
       clientDtoValidator.validateGetClient(document);  
-      return new ResponseEntity<>(clientService.getClient(document, clientDTO), HttpStatus.OK);
+      return new ResponseEntity<>(clientService.getClient(document), HttpStatus.OK);
     }
 
     @GetMapping()
@@ -74,7 +74,7 @@ public class ClientController {
                                                   @RequestBody @Parameter(description = "Updated client details", required = true) ClientDTO updateClient) {
         clientDtoValidator.validateUpdateClient(document, updateClient);
         ClientDTO savedClient = clientService.updateClient(document, updateClient);
-        return ResponseEntity.status(HttpStatus.CREATED).body(savedClient);
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).body(savedClient);
     }
 
     @DeleteMapping(IClientEndPoints.CLIENT_DOCUMENT)
@@ -85,6 +85,7 @@ public class ClientController {
             @ApiResponse(responseCode = "500", description = "Internal server error")
     })
     public ResponseEntity<Void> deleteClient(@PathVariable("document") @Parameter(description = "Client document", required = true) String document) {
+        clientDtoValidator.validateDeleteClient(document);
         clientService.deleteClient(document);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }

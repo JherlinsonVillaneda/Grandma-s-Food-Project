@@ -1,7 +1,6 @@
 package restaurant.GrandmasFood.services.clientService;
 
 import restaurant.GrandmasFood.common.domains.dto.ClientDTO;
-import restaurant.GrandmasFood.common.domains.entity.client.ClientEntity;
 
 public interface IClientService {
     ClientDTO createClient(ClientDTO clientDTO);

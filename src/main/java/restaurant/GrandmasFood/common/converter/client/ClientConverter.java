@@ -7,7 +7,6 @@ import restaurant.GrandmasFood.common.domains.dto.ClientDTO;
 import restaurant.GrandmasFood.common.domains.entity.client.ClientEntity;
 import restaurant.GrandmasFood.config.MapperConfig;
 
-import javax.print.DocFlavor;
 import java.util.ArrayList;
 import java.util.List;
 

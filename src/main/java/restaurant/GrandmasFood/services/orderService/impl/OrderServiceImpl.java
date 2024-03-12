@@ -4,7 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import restaurant.GrandmasFood.common.constant.responses.IOrderResponse;
 import restaurant.GrandmasFood.common.constant.responses.IProductResponse;
-import restaurant.GrandmasFood.common.constant.responses.IResponse;
+import restaurant.GrandmasFood.common.constant.responses.IClientResponse;
 import restaurant.GrandmasFood.common.converter.date.DateTimeConverter;
 import restaurant.GrandmasFood.common.converter.order.OrderConverter;
 import restaurant.GrandmasFood.common.domains.dto.OrderDTO;
@@ -45,7 +45,7 @@ public class OrderServiceImpl implements IOrderService {
         Optional<ProductEntity> productFound = productRepository.findProductByUuid(order.getProductUuid());
         OrderEntity orderEntity = orderConverter.convertOrderDTOToOrderEntity(order);
 
-        clientFound.orElseThrow(() -> new NotFoundException(IResponse.CLIENT_NOT_FOUND));
+        clientFound.orElseThrow(() -> new NotFoundException(IClientResponse.CLIENT_NOT_FOUND));
         productFound.orElseThrow(() -> new NotProductFoundException(IProductResponse.GET_FAIL_PRODUCT_NOT_FOUND));
 
         double total = productFound.get().getPrice();

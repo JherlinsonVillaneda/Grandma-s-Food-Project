@@ -1,10 +1,8 @@
 package restaurant.GrandmasFood.services.clientService.impl;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import org.springframework.web.server.ResponseStatusException;
-import restaurant.GrandmasFood.common.constant.responses.IResponse;
+import restaurant.GrandmasFood.common.constant.responses.IClientResponse;
 import restaurant.GrandmasFood.common.converter.client.ClientConverter;
 import restaurant.GrandmasFood.common.domains.dto.ClientDTO;
 import restaurant.GrandmasFood.common.domains.entity.client.ClientEntity;
@@ -13,8 +11,6 @@ import restaurant.GrandmasFood.exception.client.InternalServerErrorException;
 import restaurant.GrandmasFood.repository.ClientRepository.IClientRepository;
 import restaurant.GrandmasFood.services.clientService.IClientService;
 import restaurant.GrandmasFood.exception.client.NotFoundException;
-
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -32,14 +28,14 @@ public class ClientServiceImpl implements IClientService {
         ClientEntity clientEntity = clientConverter.convertClientDTOToClientEntity(clientDTO);
         Optional<ClientEntity> find = iClientRepository.findClientByDocument(clientEntity.getDocument());
         if (find.isPresent()) {
-            throw new ConflictClientException(IResponse.CREATE_CLIENT_CONFLICT);
+            throw new ConflictClientException(IClientResponse.CREATE_CLIENT_CONFLICT);
         }
         try {
             iClientRepository.save(clientEntity);
             return clientConverter.convertClientEntityToClientDTO(clientEntity);
         }
         catch (Exception e){
-            throw new InternalServerErrorException(IResponse.INTERNAL_SERVER_ERROR);
+            throw new InternalServerErrorException(IClientResponse.INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -74,9 +70,6 @@ public class ClientServiceImpl implements IClientService {
     public ClientDTO updateClient(String document, ClientDTO updatedClient) {
         ClientEntity existingClient = iClientRepository.findClientByDocument(document)
                 .orElseThrow(() -> new NotFoundException("Document " + document + " not found"));
-        if (updatedClient.equals(existingClient)) {
-            throw new ConflictClientException(IResponse.UPDATE_CLIENT_CONFLICT);
-        }
         existingClient.setCellphone(updatedClient.getCellphone());
         existingClient.setFullName(updatedClient.getFullName());
         existingClient.setEmail(updatedClient.getEmail());
@@ -85,14 +78,13 @@ public class ClientServiceImpl implements IClientService {
             ClientEntity savedClient = iClientRepository.save(existingClient);
             return clientConverter.convertClientEntityToClientDTO(savedClient);
         } catch (Exception e) {
-            throw new InternalServerErrorException(IResponse.INTERNAL_SERVER_ERROR);
+            throw new InternalServerErrorException(IClientResponse.INTERNAL_SERVER_ERROR);
         }
     }
 
     public void deleteClient(String document) {
         ClientEntity existingClient = iClientRepository.findClientByDocument(document)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,
-                        String.format("Client %s Not Found", document)));
+                .orElseThrow(() -> new NotFoundException("Document " + document + " not found"));
         existingClient.setRemoved(true);
         iClientRepository.save(existingClient);
     }
