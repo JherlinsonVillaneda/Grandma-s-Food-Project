@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import restaurant.GrandmasFood.common.constant.endpoints.IClientEndPoints;
 import restaurant.GrandmasFood.common.domains.dto.ClientDTO;
 import restaurant.GrandmasFood.services.clientService.impl.ClientServiceImpl;
+import restaurant.GrandmasFood.validator.client.ClientDtoValidator;
 
 import java.util.List;
 
@@ -20,6 +21,9 @@ import java.util.List;
 public class ClientController {
     @Autowired
     private ClientServiceImpl clientService;
+
+    @Autowired
+    private ClientDtoValidator clientDtoValidator;
 
     @PostMapping
     @Operation(summary = "Create a new client", description = "Creates a new client with the provided details")
@@ -30,8 +34,8 @@ public class ClientController {
             @ApiResponse(responseCode = "500", description = "Internal server error")
     })
     public ResponseEntity<ClientDTO> createClient(@RequestBody ClientDTO clientDTO) {
-        ClientDTO savedClient = clientService.createClient(clientDTO);
-        return ResponseEntity.status(HttpStatus.CREATED).body(savedClient);
+        clientDtoValidator.validateCreateClient(clientDTO);
+        return ResponseEntity.status(HttpStatus.CREATED).body(clientService.createClient(clientDTO));
     }
 
     @GetMapping(IClientEndPoints.CLIENT_DOCUMENT)
@@ -43,7 +47,8 @@ public class ClientController {
             @ApiResponse(responseCode = "500", description = "Internal server error")
     })
     public ResponseEntity<ClientDTO> getClient(@PathVariable("document") @Parameter(description = "Client document", required = true) String document, @RequestBody(required = false) ClientDTO clientDTO) {
-        return new ResponseEntity<>(clientService.getClient(document, clientDTO), HttpStatus.OK);
+      clientDtoValidator.validateGetClient(document);  
+      return new ResponseEntity<>(clientService.getClient(document, clientDTO), HttpStatus.OK);
     }
 
     @GetMapping()
@@ -67,6 +72,7 @@ public class ClientController {
     })
     public ResponseEntity<ClientDTO> updateClient(@PathVariable("document") @Parameter(description = "Client document", required = true) String document,
                                                   @RequestBody @Parameter(description = "Updated client details", required = true) ClientDTO updateClient) {
+        clientDtoValidator.validateUpdateClient(document, updateClient);
         ClientDTO savedClient = clientService.updateClient(document, updateClient);
         return ResponseEntity.status(HttpStatus.CREATED).body(savedClient);
     }
