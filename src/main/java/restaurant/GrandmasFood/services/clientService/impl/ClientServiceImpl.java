@@ -89,9 +89,11 @@ public class ClientServiceImpl implements IClientService {
         }
     }
 
-    public void deleteClient(String document){
-        ClientEntity existingClient = iClientRepository.findClientByDocument(document).orElseThrow(()->
-                new ResponseStatusException(HttpStatus.NOT_FOUND, String.format("Client %s Not Found", document )));
-        iClientRepository.delete(existingClient);
+    public void deleteClient(String document) {
+        ClientEntity existingClient = iClientRepository.findClientByDocument(document)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,
+                        String.format("Client %s Not Found", document)));
+        existingClient.setRemoved(true);
+        iClientRepository.save(existingClient);
     }
 }
