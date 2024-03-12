@@ -8,7 +8,6 @@ import org.springframework.web.bind.annotation.*;
 import restaurant.GrandmasFood.common.constant.endpoints.IProductEndpoints;
 import restaurant.GrandmasFood.common.domains.dto.ProductDTO;
 import restaurant.GrandmasFood.services.productService.impl.ProductServiceImpl;
-
 import java.util.List;
 
 @RestController
