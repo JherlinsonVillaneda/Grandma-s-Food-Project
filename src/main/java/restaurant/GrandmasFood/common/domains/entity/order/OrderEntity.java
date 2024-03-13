@@ -13,6 +13,7 @@ import restaurant.GrandmasFood.common.domains.entity.product.ProductEntity;
 @Setter
 @Builder
 @ToString
+@EqualsAndHashCode
 public class OrderEntity {
 
     @Id
