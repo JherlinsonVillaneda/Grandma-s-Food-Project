@@ -70,20 +70,19 @@
 			<artifactId>mysql-connector-j</artifactId>
 			<scope>runtime</scope>
 		</dependency>
-
-		<dependency>
-			<groupId>org.springdoc</groupId>
-			<artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
-			<version>2.3.0</version>
-		</dependency>
-
 		<dependency>
 			<groupId>org.modelmapper</groupId>
 			<artifactId>modelmapper</artifactId>
 			<version>3.2.0</version>
 		</dependency>
-
 	</dependencies>
+
+<!--	<distributionManagement>-->
+<!--		<repository>-->
+<!--			<id>my-repo</id>-->
+<!--			<url>file:///Users/Juancho/desktop/grandma-s-Food-Project</url>-->
+<!--		</repository>-->
+<!--	</distributionManagement>-->
 
 	<build>
 		<plugins>
@@ -101,5 +100,4 @@
 			</plugin>
 		</plugins>
 	</build>
-
 </project>

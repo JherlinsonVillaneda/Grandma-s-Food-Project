@@ -33,6 +33,6 @@ public class OrderController {
     public ResponseEntity<OrderDTO> updateOrderStatus(@PathVariable("uuid") String orderUuid, @PathVariable("timestamp") String timestamp) {
         LOGGER.info("Begin method updateOrderStatus");
         orderDtoValidator.validateUpdateOrderStatus(orderUuid, timestamp);
-        return ResponseEntity.ok(orderService.updateStatus(orderUuid, timestamp));
+        return ResponseEntity.ok(orderService.updateOrderStatus(orderUuid, timestamp));
     }
 }

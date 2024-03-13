@@ -5,4 +5,5 @@ public interface IErrorCode {
     String NAME_ALREADY_EXISTS_CODE_ERROR = "E1002";
     String BAD_REQUEST_CODE_ERROR = "E1003";
     String CONFLICT_CODE_ERROR = "E1004";
+    String INTERNAL_SERVER_CODE_ERROR = "E1005";
 }

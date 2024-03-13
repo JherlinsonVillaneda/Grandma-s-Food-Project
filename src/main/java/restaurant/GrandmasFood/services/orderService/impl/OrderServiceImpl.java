@@ -4,7 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import restaurant.GrandmasFood.common.constant.responses.IOrderResponse;
 import restaurant.GrandmasFood.common.constant.responses.IProductResponse;
-import restaurant.GrandmasFood.common.constant.responses.IResponse;
+import restaurant.GrandmasFood.common.constant.responses.IClientResponse;
 import restaurant.GrandmasFood.common.converter.date.DateTimeConverter;
 import restaurant.GrandmasFood.common.converter.order.OrderConverter;
 import restaurant.GrandmasFood.common.domains.dto.OrderDTO;
@@ -20,8 +20,6 @@ import restaurant.GrandmasFood.repository.productRepository.IProductRepository;
 import restaurant.GrandmasFood.services.orderService.IOrderService;
 
 import java.time.LocalDateTime;
-import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -41,14 +39,48 @@ public class OrderServiceImpl implements IOrderService {
     @Override
     public OrderDTO createOrder(OrderDTO order) {
 
-        Optional<ClientEntity> clientFound = clientRepository.findClientByDocument(order.getClientDocument());
-        Optional<ProductEntity> productFound = productRepository.findProductByUuid(order.getProductUuid());
+        ClientEntity clientEntity = getClientEntityByDocument(order.getClientDocument());
+        ProductEntity productEntity = getProductEntityByUuid(order.getProductUuid());
+        OrderEntity orderEntity = buildOrderEntity(order, clientEntity, productEntity);
+        orderRepository.save(orderEntity);
+
+        return orderConverter.convertOrderEntityToOrderDTO(orderEntity);
+    }
+
+    @Override
+    public OrderDTO updateOrderStatus(String uuid, String timestamp) {
+
+        OrderEntity orderFound = getOrderEntityByUuid(uuid);
+
+        orderFound.setDelivered(true);
+        orderFound.setDeliveredDate(timestamp);
+        orderRepository.save(orderFound);
+
+        return orderConverter.convertOrderEntityToOrderDTO(orderFound);
+    }
+
+    // Utility methods
+
+    private OrderEntity getOrderEntityByUuid(String uuid) {
+        return orderRepository.findOrderByUuid(uuid)
+                .orElseThrow(() -> new OrderNotFoundException(IOrderResponse.ORDER_NOT_FOUND));
+    }
+
+    private ClientEntity getClientEntityByDocument(String clientUuid) {
+        return clientRepository.findClientByDocument(clientUuid)
+                .orElseThrow(() -> new NotFoundException(IClientResponse.CLIENT_NOT_FOUND));
+    }
+
+    private ProductEntity getProductEntityByUuid(String productUuid) {
+        return productRepository.findProductByUuid(productUuid)
+                .orElseThrow(() -> new NotProductFoundException(IProductResponse.GET_FAIL_PRODUCT_NOT_FOUND));
+    }
+
+    private OrderEntity buildOrderEntity(OrderDTO order, ClientEntity clientEntity, ProductEntity productEntity) {
+
         OrderEntity orderEntity = orderConverter.convertOrderDTOToOrderEntity(order);
 
-        clientFound.orElseThrow(() -> new NotFoundException(IResponse.CLIENT_NOT_FOUND));
-        productFound.orElseThrow(() -> new NotProductFoundException(IProductResponse.GET_FAIL_PRODUCT_NOT_FOUND));
-
-        double total = productFound.get().getPrice();
+        double total = productEntity.getPrice();
         double tax = 0.19 * total;
 
         orderEntity.setUuid(UUID.randomUUID().toString());
@@ -58,33 +90,9 @@ public class OrderServiceImpl implements IOrderService {
         orderEntity.setGrandTotal(total + tax);
         orderEntity.setDelivered(false);
         orderEntity.setDeliveredDate(null);
-        orderEntity.setClientDocument(clientFound.get());
-        orderEntity.setProductUuid(productFound.get());
-
-        orderRepository.save(orderEntity);
-
-        return orderConverter.convertOrderEntityToOrderDTO(orderEntity);
-    }
-
-    @Override
-    public OrderDTO updateStatus(String uuid, String timestamp) {
-        Optional<OrderEntity> orderFound = orderRepository.findOrderByUuid(uuid);
-
-        orderFound.orElseThrow(() -> new OrderNotFoundException(IOrderResponse.ORDER_NOT_FOUND));
-
-        orderFound.get().setDelivered(true);
-        orderFound.get().setDeliveredDate(timestamp);
-        return orderConverter.convertOrderEntityToOrderDTO(orderFound.get());
-    }
-
-    public void deleteOrderByProductUuid(String productUuid) {
-
-        List<OrderEntity> orderList = orderRepository.findOrdersByProductUuid(productUuid);
-
-        if(orderList.isEmpty()) {
-            throw new OrderNotFoundException(IOrderResponse.ORDER_NOT_FOUND);
-        }
-        orderRepository.deleteAllByProductUuid(productUuid);
+        orderEntity.setClientDocument(clientEntity);
+        orderEntity.setProductUuid(productEntity);
+        return orderEntity;
     }
 
 }
