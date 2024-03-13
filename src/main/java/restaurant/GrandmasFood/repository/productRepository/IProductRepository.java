@@ -19,7 +19,7 @@ public interface IProductRepository extends JpaRepository<ProductEntity, Long> {
 
     Optional<ProductEntity> findProductByName(String name);
 
-    @Query("SELECT p FROM product p WHERE p.name like %:name% order by p.name asc")
+    @Query("SELECT p FROM product p WHERE p.name LIKE %:name% AND p.removed = false ORDER BY p.name asc")
     List<ProductEntity> findProductsByName(@Param("name") String name);
 
     @Transactional

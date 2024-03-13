@@ -1,6 +1,8 @@
 package restaurant.GrandmasFood.webApi.productController;
 
 import jakarta.validation.Valid;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -8,6 +10,8 @@ import org.springframework.web.bind.annotation.*;
 import restaurant.GrandmasFood.common.constant.endpoints.IProductEndpoints;
 import restaurant.GrandmasFood.common.domains.dto.ProductDTO;
 import restaurant.GrandmasFood.services.productService.impl.ProductServiceImpl;
+import restaurant.GrandmasFood.validator.product.ProductDtoValidator;
+import restaurant.GrandmasFood.webApi.orderController.OrderController;
 
 import java.util.List;
 
@@ -29,8 +33,10 @@ public class ProductController {
     }
 
     @PutMapping(IProductEndpoints.PRODUCT_PUT)
-    public ResponseEntity<ProductDTO> updateProduct(@PathVariable("uuid") String uuid, @RequestBody ProductDTO productDto){
-         return ResponseEntity.status(HttpStatus.ACCEPTED).body(productService.updateProduct(uuid, productDto));
+    public ResponseEntity<Void> updateProduct(@PathVariable("uuid") String uuid, @RequestBody ProductDTO productDto){
+
+        productService.updateProduct(uuid, productDto);
+         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
     @DeleteMapping(IProductEndpoints.PRODUCT_DELETE)

@@ -22,25 +22,18 @@ public class ProductEntity {
     private Long id;
 
     @Column(unique = true, length = 36, nullable = false)
-    @NotNull
     private String uuid;
 
     @Column(length = 255, unique = true, nullable = false)
-    @NotNull
-    @NotBlank(message = "The name is required.")
-    @NotEmpty
     private String name;
 
     @Enumerated(EnumType.STRING)
-    @NotNull
     private CategoryProduct category;
 
     @Column(length = 511, nullable = false)
-    @NotNull
     private String description;
 
     @Column(nullable = false)
-    @NotNull
     private Double price;
 
     @Column(columnDefinition = "boolean default true", nullable = false)
