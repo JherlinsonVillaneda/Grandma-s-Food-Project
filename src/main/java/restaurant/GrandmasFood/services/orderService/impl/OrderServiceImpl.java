@@ -4,7 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import restaurant.GrandmasFood.common.constant.responses.IOrderResponse;
 import restaurant.GrandmasFood.common.constant.responses.IProductResponse;
-import restaurant.GrandmasFood.common.constant.responses.IResponse;
+import restaurant.GrandmasFood.common.constant.responses.IClientResponse;
 import restaurant.GrandmasFood.common.converter.date.DateTimeConverter;
 import restaurant.GrandmasFood.common.converter.order.OrderConverter;
 import restaurant.GrandmasFood.common.domains.dto.OrderDTO;
@@ -68,7 +68,7 @@ public class OrderServiceImpl implements IOrderService {
 
     private ClientEntity getClientEntityByDocument(String clientUuid) {
         return clientRepository.findClientByDocument(clientUuid)
-                .orElseThrow(() -> new NotFoundException(IResponse.CLIENT_NOT_FOUND));
+                .orElseThrow(() -> new NotFoundException(IClientResponse.CLIENT_NOT_FOUND));
     }
 
     private ProductEntity getProductEntityByUuid(String productUuid) {
