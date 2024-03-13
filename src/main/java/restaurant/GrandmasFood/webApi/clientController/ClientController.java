@@ -71,9 +71,9 @@ public class ClientController {
             @ApiResponse(responseCode = "500", description = "Internal server error")
     })
     public ResponseEntity<ClientDTO> updateClient(@PathVariable("document") @Parameter(description = "Client document", required = true) String document,
-                                                  @RequestBody @Parameter(description = "Updated client details", required = true) ClientDTO updateClient) {
-        clientDtoValidator.validateUpdateClient(document, updateClient);
-        ClientDTO savedClient = clientService.updateClient(document, updateClient);
+                                                  @RequestBody @Parameter(description = "Updated client details", required = true) ClientDTO updatedClient) {
+        clientDtoValidator.validateUpdateClient(document, updatedClient);
+        ClientDTO savedClient = clientService.updateClient(document, updatedClient);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).body(savedClient);
     }
 
