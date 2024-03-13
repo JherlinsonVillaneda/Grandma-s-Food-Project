@@ -10,7 +10,6 @@ import restaurant.GrandmasFood.common.domains.entity.client.ClientEntity;
 import restaurant.GrandmasFood.common.domains.entity.order.OrderEntity;
 import restaurant.GrandmasFood.common.domains.entity.product.ProductEntity;
 
-import java.util.List;
 import java.util.Optional;
 
 @Repository
