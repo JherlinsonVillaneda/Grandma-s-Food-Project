@@ -18,6 +18,7 @@ import restaurant.GrandmasFood.repository.ClientRepository.IClientRepository;
 import restaurant.GrandmasFood.repository.OrderRepository.IOrderRepository;
 import restaurant.GrandmasFood.repository.productRepository.IProductRepository;
 import restaurant.GrandmasFood.services.orderService.IOrderService;
+import restaurant.GrandmasFood.validator.order.OrderDtoValidator;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
@@ -35,13 +36,18 @@ public class OrderServiceImpl implements IOrderService {
     OrderConverter orderConverter;
     @Autowired
     DateTimeConverter dateTimeConverter;
+    @Autowired
+    OrderDtoValidator orderDtoValidator;
 
     @Override
     public OrderDTO createOrder(OrderDTO order) {
 
+        orderDtoValidator.validateOrderCreateDto(order);
+
         ClientEntity clientEntity = getClientEntityByDocument(order.getClientDocument());
         ProductEntity productEntity = getProductEntityByUuid(order.getProductUuid());
         OrderEntity orderEntity = buildOrderEntity(order, clientEntity, productEntity);
+
         orderRepository.save(orderEntity);
 
         return orderConverter.convertOrderEntityToOrderDTO(orderEntity);
@@ -49,6 +55,8 @@ public class OrderServiceImpl implements IOrderService {
 
     @Override
     public OrderDTO updateOrderStatus(String uuid, String timestamp) {
+
+        orderDtoValidator.validateUpdateOrderStatus(uuid, timestamp);
 
         OrderEntity orderFound = getOrderEntityByUuid(uuid);
 

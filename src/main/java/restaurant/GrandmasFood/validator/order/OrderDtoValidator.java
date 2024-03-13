@@ -2,6 +2,7 @@ package restaurant.GrandmasFood.validator.order;
 
 import org.springframework.util.StringUtils;
 import org.springframework.stereotype.Component;
+import restaurant.GrandmasFood.common.constant.responses.IOrderResponse;
 import restaurant.GrandmasFood.common.domains.dto.OrderDTO;
 import restaurant.GrandmasFood.exception.order.OrderValidationException;
 
@@ -20,7 +21,7 @@ public class OrderDtoValidator {
         final List<String> errorList = new ArrayList<>();
 
         if(orderDto == null) {
-            throw new OrderValidationException("Order instance mustn't be null");
+            throw new OrderValidationException(IOrderResponse.ORDERDTO_NOT_NULL);
         }
 
         if(!StringUtils.hasLength(StringUtils.trimAllWhitespace(orderDto.getClientDocument()))) {
@@ -32,11 +33,11 @@ public class OrderDtoValidator {
         }
 
         if(orderDto.getQuantity() == null || orderDto.getQuantity() <= 0) {
-            errorList.add("Quantity can't be less than 0");
+            errorList.add(IOrderResponse.ORDER_QUANTITY_GREATER_THAN_ZERO);
         }
 
         if(orderDto.getExtraInformation() == null) {
-            errorList.add("Extra information can't be null");
+            errorList.add(IOrderResponse.ORDER_EXTRA_INFORMATION_NOTNULL);
         }
 
         if (!errorList.isEmpty()) {
@@ -54,14 +55,14 @@ public class OrderDtoValidator {
         try {
             UUID uuid = UUID.fromString(orderUuid);
         } catch (IllegalArgumentException exception){
-            errorList.add("UUID format is not valid ");
+            errorList.add(IOrderResponse.ORDER_UUID_NOT_VALID);
         }
         df.setLenient(false);
 
         try {
             df.parse(timestamp);
         } catch (ParseException e) {
-            errorList.add("Timestamp format is not valid");
+            errorList.add(IOrderResponse.ORDER_TIMESTAMP_NOT_VALID);
         }
 
         if (!errorList.isEmpty()) {
