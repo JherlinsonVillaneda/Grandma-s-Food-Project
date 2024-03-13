@@ -10,7 +10,6 @@ public interface IProductService {
     ProductDTO createProduct(ProductDTO product);
     ProductDTO getProduct(String uuid);
     ProductDTO updateProduct(String uuid, ProductDTO product);
-    Boolean equalsProducts(ProductEntity productExisting, ProductEntity productNew);
     void deleteProduct(String uuid);
     List<ProductDTO> getProductsByName(String query);
 }

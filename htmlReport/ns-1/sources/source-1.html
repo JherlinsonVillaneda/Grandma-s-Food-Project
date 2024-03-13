@@ -1,0 +1,227 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=windows-1252"> 
+  <title>Coverage Report > ProductServiceImpl</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">restaurant.GrandmasFood.services.productService.impl</a>
+</div>
+
+<h1>Coverage Summary for Class: ProductServiceImpl (restaurant.GrandmasFood.services.productService.impl)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">ProductServiceImpl</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (11/11)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (40/40)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package restaurant.GrandmasFood.services.productService.impl;
+&nbsp;
+&nbsp;import jakarta.persistence.Transient;
+&nbsp;import jakarta.validation.Valid;
+&nbsp;import org.springframework.beans.factory.annotation.Autowired;
+&nbsp;import org.springframework.stereotype.Service;
+&nbsp;import restaurant.GrandmasFood.common.converter.product.ProductConverter;
+&nbsp;import restaurant.GrandmasFood.common.domains.dto.ProductDTO;
+&nbsp;import restaurant.GrandmasFood.common.domains.entity.product.ProductEntity;
+&nbsp;import restaurant.GrandmasFood.exception.product.ConflictProductException;
+&nbsp;import restaurant.GrandmasFood.exception.product.NotProductFoundException;
+&nbsp;import restaurant.GrandmasFood.exception.product.ProductAlreadyExistsException;
+&nbsp;import restaurant.GrandmasFood.repository.productRepository.IProductRepository;
+&nbsp;import restaurant.GrandmasFood.services.productService.IProductService;
+&nbsp;
+&nbsp;import java.math.BigDecimal;
+&nbsp;import java.math.RoundingMode;
+&nbsp;import java.util.List;
+&nbsp;import java.util.Optional;
+&nbsp;import java.util.UUID;
+&nbsp;
+&nbsp;@Service
+<b class="fc">&nbsp;public class ProductServiceImpl implements IProductService {</b>
+&nbsp;
+&nbsp;    @Autowired
+&nbsp;    IProductRepository iProductRepository;
+&nbsp;
+&nbsp;    @Autowired
+&nbsp;    ProductConverter productConverter;
+&nbsp;
+&nbsp;    @Override
+&nbsp;    public ProductDTO createProduct(@Valid ProductDTO productDto) {
+<b class="fc">&nbsp;        ProductEntity product = productConverter.convertProductDtoToEntity(productDto);</b>
+&nbsp;
+<b class="fc">&nbsp;        validateIfProductExistsByName(productDto.getName());</b>
+&nbsp;
+&nbsp;        //123.123 = 123.12
+<b class="fc">&nbsp;        BigDecimal price = BigDecimal.valueOf(product.getPrice()).setScale(2, RoundingMode.HALF_UP);</b>
+<b class="fc">&nbsp;        product.setPrice(Double.valueOf(price.toString()));</b>
+<b class="fc">&nbsp;        product.setUuid(UUID.randomUUID().toString());</b>
+&nbsp;
+<b class="fc">&nbsp;        product.setName(product.getName().toUpperCase());</b>
+&nbsp;
+<b class="fc">&nbsp;        product.setRemoved(false);</b>
+<b class="fc">&nbsp;        iProductRepository.save(product);</b>
+&nbsp;
+<b class="fc">&nbsp;        return productConverter.convertProductEntityToDto(product);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @Override
+&nbsp;    public ProductDTO getProduct(String uuid){
+<b class="fc">&nbsp;        ProductEntity product = getProductByUuid(uuid);</b>
+&nbsp;
+<b class="fc">&nbsp;        return productConverter.convertProductEntityToDto(product);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @Override
+&nbsp;    public ProductDTO updateProduct(String uuid, ProductDTO productDto){
+<b class="fc">&nbsp;        ProductEntity product = productConverter.convertProductDtoToEntity(productDto);</b>
+&nbsp;
+<b class="fc">&nbsp;        ProductEntity existingProduct = getProductByUuid(uuid);</b>
+&nbsp;
+<b class="fc">&nbsp;        equalsProducts(existingProduct, product);</b>
+&nbsp;
+<b class="fc">&nbsp;        existingProduct.setName(product.getName());</b>
+<b class="fc">&nbsp;        existingProduct.setCategory(product.getCategory());</b>
+<b class="fc">&nbsp;        existingProduct.setDescription(product.getDescription());</b>
+<b class="fc">&nbsp;        existingProduct.setPrice(product.getPrice());</b>
+<b class="fc">&nbsp;        existingProduct.setAvailable(product.getAvailable());</b>
+&nbsp;
+<b class="fc">&nbsp;        iProductRepository.save(existingProduct);</b>
+&nbsp;
+<b class="fc">&nbsp;        return productConverter.convertProductEntityToDto(existingProduct);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @Override
+&nbsp;    @Transient
+&nbsp;    public void deleteProduct(String uuid) {
+<b class="fc">&nbsp;        ProductEntity existingProduct = getProductByUuid(uuid);</b>
+<b class="fc">&nbsp;        iProductRepository.deleteLogicProductById(existingProduct.getId());</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    //Bonus track
+&nbsp;    @Override
+&nbsp;    public List&lt;ProductDTO&gt; getProductsByName(String query){
+&nbsp;
+<b class="fc">&nbsp;        List&lt;ProductEntity&gt; productEntityList = iProductRepository.findProductsByName(query.toUpperCase());</b>
+&nbsp;
+<b class="fc">&nbsp;        validateListOfProducts(productEntityList);</b>
+&nbsp;
+<b class="fc">&nbsp;        return productEntityList.stream().map(p -&gt; productConverter.convertProductEntityToDto(p)).toList();</b>
+&nbsp;
+&nbsp;    }
+&nbsp;
+&nbsp;    //Auxiliaries
+&nbsp;    public ProductEntity getProductByUuid(String uuid){
+<b class="fc">&nbsp;        return iProductRepository.findProductByUuid(uuid).orElseThrow(()-&gt;</b>
+<b class="fc">&nbsp;                new NotProductFoundException(&quot;Product with the UUID provided is not found.&quot;));</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public void validateIfProductExistsByName(String name) {
+<b class="fc">&nbsp;        if (iProductRepository.findProductByName(name).isPresent()){</b>
+<b class="fc">&nbsp;            throw new ProductAlreadyExistsException(String.format(&quot;The name %s in the product in the request already exists.&quot;, name));</b>
+&nbsp;        }
+&nbsp;    }
+&nbsp;
+&nbsp;    @Override
+&nbsp;    public void equalsProducts(ProductEntity productExisting, ProductEntity productNew){
+<b class="fc">&nbsp;        if(</b>
+<b class="fc">&nbsp;                productExisting.getName().equals(productNew.getName()) &amp;&amp;</b>
+<b class="fc">&nbsp;                productExisting.getCategory().equals(productNew.getCategory()) &amp;&amp;</b>
+<b class="fc">&nbsp;                productExisting.getDescription().equals(productNew.getDescription()) &amp;&amp;</b>
+<b class="fc">&nbsp;                productExisting.getPrice().equals(productNew.getPrice()) &amp;&amp;</b>
+<b class="fc">&nbsp;                productExisting.getAvailable() == productExisting.getAvailable()</b>
+<b class="fc">&nbsp;        ) throw new ConflictProductException(&quot;The values of the request are similar at the actual product.&quot;);;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public void validateListOfProducts(List&lt;ProductEntity&gt; productEntities){
+<b class="fc">&nbsp;        if (productEntities.isEmpty()){</b>
+<b class="fc">&nbsp;            throw new NotProductFoundException(&quot;There are no products for the given value.&quot;);</b>
+&nbsp;        }
+&nbsp;    }
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2024-03-12 16:26</div>
+</div>
+</body>
+</html>
