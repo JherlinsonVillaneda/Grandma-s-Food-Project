@@ -74,14 +74,12 @@
 			<version>3.2.0</version>
 		</dependency>
 	</dependencies>
-
 <!--	<distributionManagement>-->
 <!--		<repository>-->
 <!--			<id>my-repo</id>-->
-<!--			<url>file:///Users/Juancho/desktop/grandma-s-Food-Project</url>-->
+<!--	<url>file:///Users/Juancho/desktop/grandma-s-Food-Project</url>-->
 <!--		</repository>-->
 <!--	</distributionManagement>-->
-
 	<build>
 		<plugins>
 			<plugin>

@@ -13,8 +13,10 @@ import restaurant.GrandmasFood.common.converter.date.DateTimeConverter;
 import restaurant.GrandmasFood.common.domains.dto.ClientDTO;
 import restaurant.GrandmasFood.common.domains.entity.client.ClientEntity;
 import restaurant.GrandmasFood.services.clientService.impl.ClientServiceImpl;
+
 import java.util.Arrays;
 import java.util.List;
+
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -64,7 +66,6 @@ public class ClientControllerTest {
         mockMvc.perform(post("/clients")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(clientDTO)))
-
                 .andExpect(status().isCreated())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.document").value("CC-123456789"))
@@ -73,7 +74,6 @@ public class ClientControllerTest {
                 .andExpect(jsonPath("$.cellphone").value("1234567890"))
                 .andExpect(jsonPath("$.address").value("calle 2 esquina"));
     }
-
 
     @Test
     void testGetClientSuccessfully() throws Exception {
@@ -126,12 +126,11 @@ public class ClientControllerTest {
                         .build()
         );
 
-        // Crear una instancia del convertidor real
         ClientConverter clientConverter = new ClientConverter();
         List<ClientDTO> clientDTOList = clientConverter.convertClientEntityListToClientDTOList(clientEntityList);
 
         when(clientService.getAllClients(orderBy, direction)).thenAnswer(invocation -> {
-            // Realizar la conversión en el callback del Answer
+            //
             return clientDTOList;
         });
 
@@ -154,6 +153,7 @@ public class ClientControllerTest {
                 .andExpect(jsonPath("$[1].cellphone").value("9012345678"))
                 .andExpect(jsonPath("$[1].address").value("012 Pine St"));
     }
+
     @Test
     void testUpdateClientSuccessfully() throws Exception {
         // Given

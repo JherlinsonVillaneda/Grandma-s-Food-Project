@@ -189,7 +189,7 @@ public class ClientServiceImplTest {
         assertEquals(updateClient.getCellphone(), result.getCellphone());
         assertEquals(updateClient.getAddress(), result.getAddress());
 
-        verify(clientDtoValidator, times(1)).validateUpdateClient(document, updateClient);
+        verify(clientDtoValidator, times(1)).validateUpdateClient(document, updateClient, clientEntity);
         verify(iClientRepository, times(1)).findClientByDocument(document);
         verify(iClientRepository, times(1)).save(clientEntity);
         verify(clientConverter, times(1)).convertClientEntityToClientDTO(clientEntity);
@@ -207,7 +207,6 @@ public class ClientServiceImplTest {
         // Act & Assert
         assertThrows(NotFoundException.class, () -> clientService.updateClient(document, updatedClientDTO));
 
-        verify(clientDtoValidator, times(1)).validateUpdateClient(document, updatedClientDTO);
         verify(iClientRepository, times(1)).findClientByDocument(document);
         verify(iClientRepository, never()).save(any());
         verify(clientConverter, never()).convertClientEntityToClientDTO(any());
@@ -234,7 +233,6 @@ public class ClientServiceImplTest {
         // Act & Assert
         assertThrows(InternalServerErrorException.class, () -> clientService.updateClient(document, updatedClientDTO));
 
-        verify(clientDtoValidator, times(1)).validateUpdateClient(document, updatedClientDTO);
         verify(iClientRepository, times(1)).findClientByDocument(document);
         verify(iClientRepository, times(1)).save(existingClientEntity);
         verify(clientConverter, never()).convertClientEntityToClientDTO(any());
