@@ -1,4 +1,4 @@
-package restaurant.GrandmasFood.servicetest;
+package restaurant.GrandmasFood.services.orderService.impl;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -21,7 +21,7 @@ import restaurant.GrandmasFood.exception.product.NotProductFoundException;
 import restaurant.GrandmasFood.repository.ClientRepository.IClientRepository;
 import restaurant.GrandmasFood.repository.OrderRepository.IOrderRepository;
 import restaurant.GrandmasFood.repository.productRepository.IProductRepository;
-import restaurant.GrandmasFood.services.orderService.impl.OrderServiceImpl;
+import restaurant.GrandmasFood.validator.order.OrderDtoValidator;
 
 import java.time.LocalDateTime;
 import java.util.Optional;
@@ -30,9 +30,10 @@ import java.util.UUID;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
 
 @ExtendWith(MockitoExtension.class)
-public class OrderServiceImplTest {
+class OrderServiceImplTest {
 
     @InjectMocks
     OrderServiceImpl orderService;
@@ -46,6 +47,8 @@ public class OrderServiceImplTest {
     OrderConverter orderConverter;
     @Mock
     DateTimeConverter dateTimeConverter;
+    @Mock
+    OrderDtoValidator orderDtoValidator;
 
     @BeforeEach
     void setUp() {
@@ -56,7 +59,6 @@ public class OrderServiceImplTest {
     void testCreateOrderSuccessfully() {
 
         // Given
-
         ProductEntity productEntity = ProductEntity.builder()
                 .uuid("123")
                 .name("Burger")
@@ -125,22 +127,23 @@ public class OrderServiceImplTest {
         verifyNoMoreInteractions(clientRepository, productRepository, orderConverter, dateTimeConverter);
 
         assertThat(orderSaved).isNotNull();
-        assertThat(orderEntity.getCreationDateTime()).isEqualTo(orderSaved.getCreationDateTime());
+        assertThat(orderSaved.getCreationDateTime()).isEqualTo(orderEntity.getCreationDateTime());
 
         assertNotNull(orderSaved.getClientDocument());
         assertNotNull(orderSaved.getProductUuid());
 
-        assertThat(orderEntity.getClientDocument().getDocument()).isEqualTo(orderSaved.getClientDocument());
-        assertThat(orderEntity.getProductUuid().getUuid()).isEqualTo(orderSaved.getProductUuid());
-        assertThat(orderEntity.getQuantity()).isEqualTo(orderSaved.getQuantity());
-        assertThat(orderEntity.getExtraInformation()).isEqualTo(orderSaved.getExtraInformation());
-        assertThat(productEntity.getPrice()).isEqualTo(orderSaved.getSubTotal());
-        assertThat(productEntity.getPrice() * 0.19).isEqualTo(orderSaved.getTax());
-        assertThat(productEntity.getPrice() + productEntity.getPrice() * 0.19).isEqualTo(orderSaved.getGrandTotal());
+        assertThat(orderSaved.getClientDocument()).isEqualTo(orderEntity.getClientDocument().getDocument());
+        assertThat(orderSaved.getProductUuid()).isEqualTo(orderEntity.getProductUuid().getUuid());
+        assertThat(orderSaved.getQuantity()).isEqualTo(orderEntity.getQuantity());
+        assertThat(orderSaved.getExtraInformation()).isEqualTo(orderEntity.getExtraInformation());
+        assertThat(orderSaved.getSubTotal()).isEqualTo(productEntity.getPrice());
+        assertThat(orderSaved.getTax()).isEqualTo(productEntity.getPrice() * 0.19);
+        assertThat(orderSaved.getGrandTotal()).isEqualTo(productEntity.getPrice() + productEntity.getPrice() * 0.19);
 
         assertFalse(orderSaved.getDelivered());
         assertNull(orderSaved.getDeliveredDate());
     }
+
     @Test
     void testUpdateOrderStatusSuccessfully() {
 
@@ -182,7 +185,7 @@ public class OrderServiceImplTest {
 
         assertThat(orderUpdated).isNotNull();
         assertTrue(orderUpdated.getDelivered());
-        assertThat(orderEntity.getDeliveredDate()).isEqualTo(orderUpdated.getDeliveredDate());
+        assertThat(orderUpdated.getDeliveredDate()).isEqualTo(orderEntity.getDeliveredDate());
     }
 
     @Test
@@ -229,5 +232,4 @@ public class OrderServiceImplTest {
         // Then
         assertThrows(OrderNotFoundException.class, () -> orderService.updateOrderStatus(orderUuid, timestamp));
     }
-
 }

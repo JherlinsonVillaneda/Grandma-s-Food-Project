@@ -69,13 +69,13 @@ public class OrderServiceImpl implements IOrderService {
 
     // Utility methods
 
-    private OrderEntity getOrderEntityByUuid(String uuid) {
-        return orderRepository.findOrderByUuid(uuid)
+    private OrderEntity getOrderEntityByUuid(String orderUuid) {
+        return orderRepository.findOrderByUuid(orderUuid)
                 .orElseThrow(() -> new OrderNotFoundException(IOrderResponse.ORDER_NOT_FOUND));
     }
 
-    private ClientEntity getClientEntityByDocument(String clientUuid) {
-        return clientRepository.findClientByDocument(clientUuid)
+    private ClientEntity getClientEntityByDocument(String clientDocument) {
+        return clientRepository.findClientByDocument(clientDocument)
                 .orElseThrow(() -> new NotFoundException(IClientResponse.CLIENT_NOT_FOUND));
     }
 
