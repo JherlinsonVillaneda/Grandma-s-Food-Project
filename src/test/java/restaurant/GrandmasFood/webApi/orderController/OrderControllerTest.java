@@ -1,4 +1,4 @@
-package restaurant.GrandmasFood.controller;
+package restaurant.GrandmasFood.webApi.orderController;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
@@ -11,14 +11,16 @@ import org.springframework.test.web.servlet.MockMvc;
 import restaurant.GrandmasFood.common.converter.date.DateTimeConverter;
 import restaurant.GrandmasFood.common.domains.dto.OrderDTO;
 import restaurant.GrandmasFood.services.orderService.IOrderService;
-import restaurant.GrandmasFood.webApi.orderController.OrderController;
 
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 
 @WebMvcTest(controllers = OrderController.class)
-public class OrderControllerTest {
+class OrderControllerTest {
 
     @Autowired
     MockMvc mockMvc;
@@ -57,7 +59,8 @@ public class OrderControllerTest {
         when(orderService.createOrder(Mockito.any(OrderDTO.class))).thenReturn(orderDTOExpected);
 
         // When
-        mockMvc.perform(post("/orders").contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsString(orderDTO)))
+        mockMvc.perform(post("/orders").contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(orderDTO)))
 
         // Then
                 .andExpect(status().isCreated())
@@ -65,6 +68,9 @@ public class OrderControllerTest {
                 .andExpect(jsonPath("$.clientDocument").value("CC-123456"))
                 .andExpect(jsonPath("$.productUuid").value("123"))
                 .andExpect(jsonPath("$.quantity").value(2));
+
+        verify(orderService).createOrder(Mockito.any(OrderDTO.class));
+
     }
 
     @Test
@@ -84,11 +90,12 @@ public class OrderControllerTest {
         // When
         mockMvc.perform(patch("/orders/{orderUuid}/delivered/{timestamp}", orderUuid, timestamp))
 
-        // Then
+                // Then
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.delivered").value(true))
                 .andExpect(jsonPath("$.deliveredDate").value(timestamp));
 
+        verify(orderService).updateOrderStatus(orderUuid, timestamp);
     }
 }
