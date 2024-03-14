@@ -1,5 +1,4 @@
 package restaurant.GrandmasFood.services.clientService.impl;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import restaurant.GrandmasFood.common.constant.responses.IClientResponse;
@@ -22,37 +21,37 @@ import java.util.Optional;
 public class ClientServiceImpl implements IClientService {
 
     @Autowired
-    IClientRepository iClientRepository;
+    private IClientRepository iClientRepository;
 
     @Autowired
-    IOrderRepository iOrderRepository;
+    private IOrderRepository iOrderRepository;
 
     @Autowired
-    ClientConverter clientConverter;
+     private ClientConverter clientConverter;
 
     @Autowired
-    ClientDtoValidator clientDtoValidator;
+    private ClientDtoValidator clientDtoValidator;
 
     public ClientDTO createClient(ClientDTO clientDTO) {
+        clientDtoValidator.validateCreateClient(clientDTO);
         ClientEntity clientEntity = clientConverter.convertClientDTOToClientEntity(clientDTO);
         Optional<ClientEntity> find = iClientRepository.findClientByDocument(clientEntity.getDocument());
         if (find.isPresent()) {
             throw new ConflictClientException(IClientResponse.CREATE_CLIENT_CONFLICT);
         }
         try {
-            clientDtoValidator.validateCreateClient(clientDTO);
+            clientEntity.setRemoved(false);
             iClientRepository.save(clientEntity);
             return clientConverter.convertClientEntityToClientDTO(clientEntity);
-        }
-        catch (Exception e){
+        } catch (Exception e) {
             throw new InternalServerErrorException(IClientResponse.INTERNAL_SERVER_ERROR);
         }
     }
 
-    public ClientDTO getClient(String document){
+    public ClientDTO getClient(String document) {
         clientDtoValidator.validateGetClient(document);
         ClientEntity find = iClientRepository.findClientByDocument(document)
-                .orElseThrow(()-> new NotFoundException("Document " + document + " not found"));
+                .orElseThrow(() -> new NotFoundException("Document " + document + " not found"));
         return clientConverter.convertClientEntityToClientDTO(find);
     }
 

@@ -32,7 +32,6 @@ public class ClientController {
             @ApiResponse(responseCode = "500", description = "Internal server error")
     })
     public ResponseEntity<ClientDTO> createClient(@RequestBody ClientDTO clientDTO) {
-
         return ResponseEntity.status(HttpStatus.CREATED).body(clientService.createClient(clientDTO));
     }
 

@@ -1,6 +1,5 @@
 package restaurant.GrandmasFood.validator.client;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 import restaurant.GrandmasFood.common.constant.responses.IClientResponse;
@@ -18,7 +17,6 @@ import java.util.List;
 @Component
 public class ClientDtoValidator {
 
-    @Autowired
     IClientRepository iClientRepository;
 
     public void validateCreateClient(ClientDTO clientDTO){
@@ -31,7 +29,6 @@ public class ClientDtoValidator {
         }else if (!clientDTO.getDocument().matches("^(CC|CE|TI)-\\d+$")) {
             errorList.add("Invalid document format. It should start with 'CC-', 'CE-' or 'TI-' followed by numbers.");
         }
-
         if(!StringUtils.hasLength(StringUtils.trimAllWhitespace(clientDTO.getFullName()))) {
             errorList.add("Client name can't be empty");
         }
@@ -85,9 +82,7 @@ public class ClientDtoValidator {
                     String.format("Invalid and incomplete client data: %s", String.join(", ", errorList)));
         }
 
-        ClientEntity existingClient = iClientRepository.findClientByDocument(document)
-                .orElseThrow(() -> new NotFoundException("Document " + document + " not found"));
-
+        ClientEntity existingClient = new ClientEntity();
         if (clientDTO.getCellphone().equals(existingClient.getCellphone()) &&
                 clientDTO.getFullName().equals(existingClient.getFullName()) &&
                 clientDTO.getEmail().equals(existingClient.getEmail()) &&
