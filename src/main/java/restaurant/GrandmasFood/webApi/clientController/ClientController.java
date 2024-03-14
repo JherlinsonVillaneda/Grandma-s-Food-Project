@@ -24,13 +24,13 @@ public class ClientController {
 
 
     @PostMapping
-//    @Operation(summary = "Create a new client", description = "Creates a new client with the provided details")
-//    @ApiResponses(value = {
-//            @ApiResponse(responseCode = "201", description = "Client created successfully",
-//                    content = @Content(schema = @Schema(implementation = ClientDTO.class))),
-//            @ApiResponse(responseCode = "400", description = "Bad request"),
-//            @ApiResponse(responseCode = "500", description = "Internal server error")
-//    })
+    @Operation(summary = "Create a new client", description = "Creates a new client with the provided details")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "201", description = "Client created successfully",
+                    content = @Content(schema = @Schema(implementation = ClientDTO.class))),
+            @ApiResponse(responseCode = "400", description = "Bad request"),
+            @ApiResponse(responseCode = "500", description = "Internal server error")
+    })
     public ResponseEntity<ClientDTO> createClient(@RequestBody ClientDTO clientDTO) {
 
         return ResponseEntity.status(HttpStatus.CREATED).body(clientService.createClient(clientDTO));
