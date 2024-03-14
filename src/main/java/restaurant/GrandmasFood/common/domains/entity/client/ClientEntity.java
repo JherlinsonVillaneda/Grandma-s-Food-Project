@@ -16,6 +16,7 @@ import lombok.*;
 public class ClientEntity {
 
     @Id
+    @Column(name = "document", length = 20)
     private String document;
 
     @Column(name = "full_name", length = 255)
@@ -26,7 +27,7 @@ public class ClientEntity {
     @NotEmpty
     private String email;
 
-    @Column(unique = true, length = 15)
+    @Column(unique = true, length = 10)
     @NotEmpty
     private String cellphone;
 
