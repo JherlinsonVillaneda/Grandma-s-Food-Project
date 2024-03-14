@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.*;
 import restaurant.GrandmasFood.common.constant.endpoints.IClientEndPoints;
 import restaurant.GrandmasFood.common.domains.dto.ClientDTO;
 import restaurant.GrandmasFood.services.clientService.impl.ClientServiceImpl;
-import restaurant.GrandmasFood.validator.client.ClientDtoValidator;
 
 import java.util.List;
 
@@ -22,8 +21,7 @@ public class ClientController {
     @Autowired
     private ClientServiceImpl clientService;
 
-    @Autowired
-    private ClientDtoValidator clientDtoValidator;
+
 
     @PostMapping
 //    @Operation(summary = "Create a new client", description = "Creates a new client with the provided details")
@@ -34,7 +32,7 @@ public class ClientController {
 //            @ApiResponse(responseCode = "500", description = "Internal server error")
 //    })
     public ResponseEntity<ClientDTO> createClient(@RequestBody ClientDTO clientDTO) {
-        clientDtoValidator.validateCreateClient(clientDTO);
+
         return ResponseEntity.status(HttpStatus.CREATED).body(clientService.createClient(clientDTO));
     }
 
@@ -47,7 +45,6 @@ public class ClientController {
             @ApiResponse(responseCode = "500", description = "Internal server error")
     })
     public ResponseEntity<ClientDTO> getClient(@PathVariable("document") @Parameter(description = "Client document", required = true) String document)  {
-      clientDtoValidator.validateGetClient(document);  
       return new ResponseEntity<>(clientService.getClient(document), HttpStatus.OK);
     }
 
@@ -72,7 +69,6 @@ public class ClientController {
     })
     public ResponseEntity<ClientDTO> updateClient(@PathVariable("document") @Parameter(description = "Client document", required = true) String document,
                                                   @RequestBody @Parameter(description = "Updated client details", required = true) ClientDTO updatedClient) {
-        clientDtoValidator.validateUpdateClient(document, updatedClient);
         ClientDTO savedClient = clientService.updateClient(document, updatedClient);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).body(savedClient);
     }
@@ -85,7 +81,6 @@ public class ClientController {
             @ApiResponse(responseCode = "500", description = "Internal server error")
     })
     public ResponseEntity<Void> deleteClient(@PathVariable("document") @Parameter(description = "Client document", required = true) String document) {
-        clientDtoValidator.validateDeleteClient(document);
         clientService.deleteClient(document);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
