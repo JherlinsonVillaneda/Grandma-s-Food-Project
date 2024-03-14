@@ -9,10 +9,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import restaurant.GrandmasFood.common.converter.date.DateTimeConverter;
 import restaurant.GrandmasFood.exception.ErrorInfo;
 import restaurant.GrandmasFood.exception.IErrorCode;
-import restaurant.GrandmasFood.exception.product.ConflictProductException;
-import restaurant.GrandmasFood.exception.product.NotProductFoundException;
-import restaurant.GrandmasFood.exception.product.ProductAlreadyExistsException;
-import restaurant.GrandmasFood.exception.product.BadRequestProductException;
+import restaurant.GrandmasFood.exception.product.*;
 
 import java.time.LocalDateTime;
 
@@ -46,4 +43,14 @@ public class ExceptionProductHandlerAdvice {
         return new ResponseEntity<>(errorInfo, HttpStatus.CONFLICT);
     }
 
+    @ExceptionHandler(ProductValidationException.class)
+    public ResponseEntity<ErrorInfo> productValidationInfoResponse(ProductValidationException ex){
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST.value())
+                .body(ErrorInfo.builder()
+                        .code(IErrorCode.BAD_REQUEST_CODE_ERROR)
+                        .timestamp(dateConverter.formatDateTimeToIso8601(LocalDateTime.now()))
+                        .description(ex.getMessage())
+                        .exception(ex.getClass().getSimpleName())
+                        .build());
+    }
 }
