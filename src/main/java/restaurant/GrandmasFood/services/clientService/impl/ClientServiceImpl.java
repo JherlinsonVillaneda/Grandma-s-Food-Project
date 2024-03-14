@@ -88,4 +88,6 @@ public class ClientServiceImpl implements IClientService {
         existingClient.setRemoved(true);
         iClientRepository.save(existingClient);
     }
+
+
 }

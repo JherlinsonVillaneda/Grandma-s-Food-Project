@@ -50,7 +50,7 @@ public class ExceptionClientHandlerAdvice {
 
     @ExceptionHandler(InternalServerErrorException.class)
     public ResponseEntity<ErrorInfo> InternalServerErrorResponse(InternalServerErrorException e){
-        return ResponseEntity.status(HttpStatus.CONFLICT.value()).body(ErrorInfo.builder()
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR.value()).body(ErrorInfo.builder()
                 .code(IErrorCode.INTERNAL_SERVER_CODE_ERROR)
                 .timestamp(dateConverter.formatDateTimeToIso8601(LocalDateTime.now()))
                 .description(e.getMessage())
