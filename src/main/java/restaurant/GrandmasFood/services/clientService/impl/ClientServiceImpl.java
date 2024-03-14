@@ -12,6 +12,8 @@ import restaurant.GrandmasFood.repository.ClientRepository.IClientRepository;
 import restaurant.GrandmasFood.repository.OrderRepository.IOrderRepository;
 import restaurant.GrandmasFood.services.clientService.IClientService;
 import restaurant.GrandmasFood.exception.client.NotFoundException;
+import restaurant.GrandmasFood.validator.client.ClientDtoValidator;
+
 import java.util.List;
 import java.util.Optional;
 
@@ -28,6 +30,9 @@ public class ClientServiceImpl implements IClientService {
     @Autowired
     ClientConverter clientConverter;
 
+    @Autowired
+    ClientDtoValidator clientDtoValidator;
+
     public ClientDTO createClient(ClientDTO clientDTO) {
         ClientEntity clientEntity = clientConverter.convertClientDTOToClientEntity(clientDTO);
         Optional<ClientEntity> find = iClientRepository.findClientByDocument(clientEntity.getDocument());
@@ -35,6 +40,7 @@ public class ClientServiceImpl implements IClientService {
             throw new ConflictClientException(IClientResponse.CREATE_CLIENT_CONFLICT);
         }
         try {
+            clientDtoValidator.validateCreateClient(clientDTO);
             iClientRepository.save(clientEntity);
             return clientConverter.convertClientEntityToClientDTO(clientEntity);
         }
@@ -44,6 +50,7 @@ public class ClientServiceImpl implements IClientService {
     }
 
     public ClientDTO getClient(String document){
+        clientDtoValidator.validateGetClient(document);
         ClientEntity find = iClientRepository.findClientByDocument(document)
                 .orElseThrow(()-> new NotFoundException("Document " + document + " not found"));
         return clientConverter.convertClientEntityToClientDTO(find);
@@ -72,6 +79,7 @@ public class ClientServiceImpl implements IClientService {
 
 
     public ClientDTO updateClient(String document, ClientDTO updatedClient) {
+        clientDtoValidator.validateUpdateClient(document, updatedClient);
         ClientEntity existingClient = iClientRepository.findClientByDocument(document)
                 .orElseThrow(() -> new NotFoundException("Document " + document + " not found"));
         existingClient.setCellphone(updatedClient.getCellphone());
@@ -87,13 +95,12 @@ public class ClientServiceImpl implements IClientService {
     }
 
     public void deleteClient(String document) {
+        clientDtoValidator.validateDeleteClient(document);
         ClientEntity existingClient = iClientRepository.findClientByDocument(document)
                 .orElseThrow(() -> new NotFoundException("Document " + document + " not found"));
 
         iOrderRepository.deleteAllByClientDocument(existingClient);
-
         existingClient.setRemoved(true);
-
         iClientRepository.save(existingClient);
     }
 

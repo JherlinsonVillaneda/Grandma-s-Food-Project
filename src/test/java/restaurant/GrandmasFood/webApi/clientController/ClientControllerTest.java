@@ -58,7 +58,7 @@ public class ClientControllerTest {
                 .build();
 
         // Configure behavior of the mock service
-        when(clientService.createClient(any(ClientDTO.class))).thenReturn(clientDTO);
+        when(clientService.createClient(any(ClientDTO.class))).thenReturn(clientDTOExpected);
 
         // Perform the request and assert the response
         mockMvc.perform(post("/clients")
