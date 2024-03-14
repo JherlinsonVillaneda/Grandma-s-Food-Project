@@ -1,4 +1,4 @@
-package restaurant.GrandmasFood.controller;
+package restaurant.GrandmasFood.webApi.clientController;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
@@ -13,8 +13,6 @@ import restaurant.GrandmasFood.common.converter.date.DateTimeConverter;
 import restaurant.GrandmasFood.common.domains.dto.ClientDTO;
 import restaurant.GrandmasFood.common.domains.entity.client.ClientEntity;
 import restaurant.GrandmasFood.services.clientService.impl.ClientServiceImpl;
-import restaurant.GrandmasFood.validator.client.ClientDtoValidator;
-import restaurant.GrandmasFood.webApi.clientController.ClientController;
 import java.util.Arrays;
 import java.util.List;
 import static org.mockito.ArgumentMatchers.any;
@@ -39,8 +37,6 @@ public class ClientControllerTest {
     @MockBean
     ClientServiceImpl clientService;
 
-    @MockBean
-    private ClientDtoValidator clientDtoValidator;
 
     @Test
     void testCreateClientSuccessfully() throws Exception {
