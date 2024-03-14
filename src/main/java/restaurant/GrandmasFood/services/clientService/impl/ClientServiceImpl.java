@@ -78,9 +78,9 @@ public class ClientServiceImpl implements IClientService {
 
 
     public ClientDTO updateClient(String document, ClientDTO updatedClient) {
-        clientDtoValidator.validateUpdateClient(document, updatedClient);
         ClientEntity existingClient = iClientRepository.findClientByDocument(document)
                 .orElseThrow(() -> new NotFoundException("Document " + document + " not found"));
+        clientDtoValidator.validateUpdateClient(document, updatedClient, existingClient);
         existingClient.setCellphone(updatedClient.getCellphone());
         existingClient.setFullName(updatedClient.getFullName());
         existingClient.setEmail(updatedClient.getEmail());

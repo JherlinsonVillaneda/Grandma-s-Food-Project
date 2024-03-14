@@ -17,8 +17,6 @@ import java.util.List;
 @Component
 public class ClientDtoValidator {
 
-    IClientRepository iClientRepository;
-
     public void validateCreateClient(ClientDTO clientDTO){
         final List<String> errorList = new ArrayList<>();
         if(clientDTO == null) {
@@ -55,7 +53,7 @@ public class ClientDtoValidator {
         }
     }
 
-    public void validateUpdateClient(String document, ClientDTO clientDTO) {
+    public void validateUpdateClient(String document, ClientDTO clientDTO, ClientEntity existingClient) {
         final List<String> errorList = new ArrayList<>();
         if (clientDTO == null) {
             throw new ClientBadRequestException("Client instance mustn't be null");
@@ -82,7 +80,6 @@ public class ClientDtoValidator {
                     String.format("Invalid and incomplete client data: %s", String.join(", ", errorList)));
         }
 
-        ClientEntity existingClient = new ClientEntity();
         if (clientDTO.getCellphone().equals(existingClient.getCellphone()) &&
                 clientDTO.getFullName().equals(existingClient.getFullName()) &&
                 clientDTO.getEmail().equals(existingClient.getEmail()) &&

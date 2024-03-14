@@ -1,4 +1,5 @@
 package restaurant.GrandmasFood.webApi.clientController;
+
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -21,8 +22,6 @@ public class ClientController {
     @Autowired
     private ClientServiceImpl clientService;
 
-
-
     @PostMapping
     @Operation(summary = "Create a new client", description = "Creates a new client with the provided details")
     @ApiResponses(value = {
@@ -43,8 +42,8 @@ public class ClientController {
             @ApiResponse(responseCode = "404", description = "Client not found"),
             @ApiResponse(responseCode = "500", description = "Internal server error")
     })
-    public ResponseEntity<ClientDTO> getClient(@PathVariable("document") @Parameter(description = "Client document", required = true) String document)  {
-      return new ResponseEntity<>(clientService.getClient(document), HttpStatus.OK);
+    public ResponseEntity<ClientDTO> getClient(@PathVariable("document") @Parameter(description = "Client document", required = true) String document) {
+        return new ResponseEntity<>(clientService.getClient(document), HttpStatus.OK);
     }
 
     @GetMapping()
@@ -58,6 +57,7 @@ public class ClientController {
         List<ClientDTO> clients = clientService.getAllClients(orderBy, direction);
         return new ResponseEntity<>(clients, HttpStatus.OK);
     }
+
     @PutMapping(IClientEndPoints.CLIENT_DOCUMENT)
     @Operation(summary = "Update a client", description = "Updates an existing client with the provided details")
     @ApiResponses(value = {
