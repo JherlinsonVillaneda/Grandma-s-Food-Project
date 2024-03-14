@@ -1,4 +1,4 @@
-package restaurant.GrandmasFood.servicetest;
+package restaurant.GrandmasFood.services.productService.impl;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -17,6 +17,7 @@ import restaurant.GrandmasFood.exception.product.NotProductFoundException;
 import restaurant.GrandmasFood.exception.product.ProductAlreadyExistsException;
 import restaurant.GrandmasFood.repository.productRepository.IProductRepository;
 import restaurant.GrandmasFood.services.productService.impl.ProductServiceImpl;
+import restaurant.GrandmasFood.validator.product.ProductDtoValidator;
 
 import java.util.List;
 import java.util.Optional;
@@ -35,6 +36,9 @@ public class ProductServiceImplTest {
 
     @Mock
     ProductConverter productConverter;
+
+    @Mock
+    ProductDtoValidator productDtoValidator;
 
     @BeforeEach
     void setUp() {
